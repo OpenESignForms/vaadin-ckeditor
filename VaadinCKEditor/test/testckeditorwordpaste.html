@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>CKEditor test</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script type="text/javascript" src="http://nightly.ckeditor.com/13-04-05-14-51/full/ckeditor.js"></script>
+</head>
+<body>
+
+<div style="width: 100%">
+    <textarea id="editor1" name="note"></textarea>
+    <script type="text/javascript">
+    
+    	CKEDITOR.config.pasteFromWordPromptCleanup = true;
+    	CKEDITOR.config.pasteFromWordRemoveFontStyles = false;
+    	CKEDITOR.config.pasteFromWordRemoveStyles = false;
+    
+    	var editor = CKEDITOR.replace('editor1');
+	</script>
+</div>
+
+</body>
+</html>
