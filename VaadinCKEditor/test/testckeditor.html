@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>CKEditor test</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script type="text/javascript" src="http://nightly.ckeditor.com/13-02-09-08-51/full/ckeditor.js"></script>
+	<script type="text/javascript">
+		var editorBuffer = '';
+		function showEditor() {
+			if ( editorBuffer !== editor.getData() ) {
+				alert('Editor mismatch : editorBuffer.length: ' + editorBuffer.length + '; editor.getData().length: ' + editor.getData().length);
+				console.log('Editor mismatch\neditorBuffer: ' + editorBuffer);
+				console.log('getData(): ' + editor.getData());
+			} else if ( editorBuffer.indexOf('cke_pastebin')!=-1 ) {
+				console.log('showEditor() - cke_pastebin: ' + editorBuffer);
+			} else if ( editorBuffer.indexOf('<span style="display: none;">&nbsp;</span>')!=-1 ) {
+				console.log('showEditor() - empty span: ' + editorBuffer);
+			} else {
+				console.log('showEditor() - buffers match');
+			}
+		}
+	</script>
+</head>
+<body>
+
+<div style="width: 100%">
+    <textarea id="editor1" name="note"></textarea>
+    <script type="text/javascript">
+    
+		//CKEDITOR.focusManager.prototype.orig_blur = CKEDITOR.focusManager.prototype.blur;
+		//CKEDITOR.focusManager.prototype.blur = function() { CKEDITOR.focusManager.prototype.orig_blur.call(this,true); };
+		//CKEDITOR.focusManager._.blurDelay = 1; // from 200 the default
+    
+    	var editor = CKEDITOR.replace('editor1');
+        editor.on('blur', function(evt){
+        	editorBuffer = editor.getData();
+            //console.log(evt);
+            //console.log(evt.sender.name);
+            console.log('blur');
+        });
+        editor.on('focus', function(evt){
+            //console.log(evt);
+            //console.log(evt.sender.name);
+            console.log('focus');
+    	});
+		editorBuffer = editor.getData();
+
+	</script>
+</div>
+
+<p><input type="submit" name="submit" value="submit" onclick="showEditor()"/></p>
+
+</body>
+</html>
