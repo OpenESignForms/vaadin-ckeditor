@@ -14,24 +14,24 @@ import java.util.Set;
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField;
 
 import com.vaadin.data.Property;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
+import com.vaadin.server.PaintException;
+import com.vaadin.server.PaintTarget;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.LegacyComponent;
 
 /**
  * Server side component for the VCKEditorTextField widget.  
  */
-@com.vaadin.ui.ClientWidget(VCKEditorTextField.class)
-public class CKEditorTextField extends AbstractField 
-	implements FieldEvents.BlurNotifier, FieldEvents.FocusNotifier, Component.Focusable  {
-	
-	private static final long serialVersionUID = -37444047694136727L;
+public class CKEditorTextField extends AbstractField<String> 
+	implements FieldEvents.BlurNotifier, FieldEvents.FocusNotifier, Component.Focusable, LegacyComponent  {
+	private static final long serialVersionUID = 5305686789639771320L;
 
 	private CKEditorConfig config;
 	private String version = "unknown";
@@ -43,8 +43,8 @@ public class CKEditorTextField extends AbstractField
 
 	public CKEditorTextField() {
 		super.setValue("");
-		setWidth(100,UNITS_PERCENTAGE);
-		setHeight(300,UNITS_PIXELS);
+		setWidth("100%");
+		setHeight("300px");
 	}
 	
 	public CKEditorTextField(CKEditorConfig config) {
@@ -61,16 +61,16 @@ public class CKEditorTextField extends AbstractField
 	}
 	
 	@Override
-    public void setValue(Object newValue) throws Property.ReadOnlyException, Property.ConversionException {
+    public void setValue(String newValue) throws Property.ReadOnlyException, Converter.ConversionException {
     	if ( newValue == null )
     		newValue = "";
-    	super.setValue(newValue.toString(), false);
+    	super.setValue(newValue, false);
     	requestRepaint();
     }
 	
 	@Override
 	public void paintContent(PaintTarget target) throws PaintException {
-		super.paintContent(target);
+		//super.paintContent(target);
 		
 		Object currValueObject = getValue();
 		String currValue = currValueObject == null ? "" : currValueObject.toString();
@@ -126,7 +126,7 @@ public class CKEditorTextField extends AbstractField
 	
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
-        super.changeVariables(source, variables);
+        //super.changeVariables(source, variables);
 
         // Sets the CKEditor version
         if (variables.containsKey(VCKEditorTextField.VAR_VERSION)) {
@@ -160,36 +160,46 @@ public class CKEditorTextField extends AbstractField
 
 
 	@Override
-	public Class<?> getType() {
+	public Class<String> getType() {
 		return String.class;
 	}
 	
 	@Override
 	public void addListener(BlurListener listener) {
-        addListener(BlurEvent.EVENT_ID, BlurEvent.class, listener,
-                BlurListener.blurMethod);
+        addListener(BlurEvent.EVENT_ID, BlurEvent.class, listener, BlurListener.blurMethod);
 	}
-
+	@Override
+	public void addBlurListener(BlurListener listener) {
+		addListener(BlurEvent.EVENT_ID, BlurEvent.class, listener, BlurListener.blurMethod);
+	}
+	
 	@Override
 	public void removeListener(BlurListener listener) {
         removeListener(BlurEvent.EVENT_ID, BlurEvent.class, listener);
 	}
-
+	@Override
+	public void removeBlurListener(BlurListener listener) {
+		removeListener(BlurEvent.EVENT_ID, BlurEvent.class, listener);
+	}
+	
 	@Override
 	public void addListener(FocusListener listener) {
-        addListener(FocusEvent.EVENT_ID, FocusEvent.class, listener,
-                FocusListener.focusMethod);
+        addListener(FocusEvent.EVENT_ID, FocusEvent.class, listener, FocusListener.focusMethod);
+	}
+	@Override
+	public void addFocusListener(FocusListener listener) {
+		addListener(FocusEvent.EVENT_ID, FocusEvent.class, listener, FocusListener.focusMethod);
 	}
 
 	@Override
 	public void removeListener(FocusListener listener) {
         removeListener(FocusEvent.EVENT_ID, FocusEvent.class, listener);
 	}
-	
 	@Override
-    public void setHeight(float height, int unit) {
-		super.setHeight(height,unit);
+	public void removeFocusListener(FocusListener listener) {
+		removeListener(FocusEvent.EVENT_ID, FocusEvent.class, listener);
 	}
+	
 	@Override
     public void setHeight(String height) {
 		super.setHeight(height);

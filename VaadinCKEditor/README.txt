@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 23 April 2013
+Last updated: 8 May 2013
 
   USING CKEDITOR FOR VAADIN IN YOUR APPLICATION
   =============================================
@@ -50,16 +50,25 @@ under the Creative Commons Attribution 3.0 License.
 
   TODO
   ====
-  * Port to Vaadin 7.
+  * Take advantage of Vaadin 7 features for add-on widgets.
+  * Resolve the issue with the editor opening in a modal Vaadin Window. 
 
   KNOWN ISSUES
   ============
+  * The widget has issues when used in a modal Vaadin Window. This was previously fixed in a hack around the Vaadin VWindow issue
+    back in version 1.6.4, but sadly we don't have a comparable fix yet for Vaadin 7.
   * Need a better mechanism than the blur event to detect editor changes.
     Apparently, CKEditor will support an official onchange event in the 4.2 release (http://dev.ckeditor.com/ticket/9794) 
     that we hope will resolve this.
   
   CHANGELOG
   =========
+
+7.8.2 (8 May 2013)
+- Basic legacy port from Vaadin 6.8.10 to 7.0.5. Special thanks to Samuli Penttilä for submitting a conversion patch that was based on an older 1.6 release
+  but could still be applied to the 1.8.2 release we did the conversion on.
+- Note that this is considered experimental as it's built on the legacy conversion and has not been tested in production Vaadin 7 environments.
+- Note that the modal window bug has returned with this port, so you are recommended not to place a CKEditorTextField in a modal Vaadin Window.
 
 1.8.2 (23 April 2013)
 - Upgraded to CKEditor 4.1.1. This patch allows previous pasteFromWord* settings to work.
