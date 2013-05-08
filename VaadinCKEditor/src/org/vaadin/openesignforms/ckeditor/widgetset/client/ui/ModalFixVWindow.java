@@ -1,4 +1,4 @@
-// Copyright (C) 2012 Yozons, Inc.
+// Copyright (C) 2012-2013 Yozons, Inc.
 // CKEditor for Vaadin - Fix for broken VWindow implementation as it relates to modal windows 
 // containing CKEditor that then opens its own modal dialogs that no longer work.
 //
@@ -10,9 +10,7 @@
 package org.vaadin.openesignforms.ckeditor.widgetset.client.ui;
 
 import com.google.gwt.user.client.Event;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.UIDL;
-import com.vaadin.terminal.gwt.client.ui.VWindow;
+import com.vaadin.client.ui.VWindow;
 
 /**
  * <p>
@@ -21,7 +19,7 @@ import com.vaadin.terminal.gwt.client.ui.VWindow;
  * Setup your own widgetset and have this somewhere in the module.xml:
  *   <code>
  *   <replace-with class="org.vaadin.openesignforms.ckeditor.widgetset.client.ui.ModalFixVWindow">
- *       <when-type-is class="com.vaadin.terminal.gwt.client.ui.VWindow"/>
+ *       <when-type-is class="com.vaadin.client.ui.VWindow"/>
  *   </replace-with>
  *   </code>
  * </p>
@@ -32,21 +30,6 @@ import com.vaadin.terminal.gwt.client.ui.VWindow;
  */
 public class ModalFixVWindow extends VWindow {
 
-	private boolean modal;
-	
-	/**
-     * {@inheritDoc}
-     *
-     * @see VWindow#updateFromUIDL(UIDL, ApplicationConnection)
-     */
-    @Override
-    public void updateFromUIDL(final UIDL uidl, final ApplicationConnection client)
-    {
-        if (uidl.hasAttribute("modal")) //$NON-NLS-1$
-            modal = uidl.getBooleanAttribute("modal"); //$NON-NLS-1$
-        super.updateFromUIDL(uidl, client);
-    }
-
     /**
      * {@inheritDoc}
      *
@@ -55,7 +38,7 @@ public class ModalFixVWindow extends VWindow {
     @Override
     public boolean onEventPreview(final Event event)
     {
-        if (modal)
+        if (isModal())
             return true; // why would they block click to other elements?
         return super.onEventPreview(event);
     }
