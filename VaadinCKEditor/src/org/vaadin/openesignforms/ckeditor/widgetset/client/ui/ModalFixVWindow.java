@@ -26,19 +26,14 @@ import com.vaadin.client.ui.VWindow;
  * 
  * @see http://code.google.com/p/vaadin-ckeditor/issues/detail?id=10
  * @see https://vaadin.com/forum/-/message_boards/view_message/238571
- * @author ttran
+ * @author ttran, Yozons
  */
 public class ModalFixVWindow extends VWindow {
-
-    /**
-     * {@inheritDoc}
-     *
-     * @see VWindow#onEventPreview(Event)
-     */
+	
     @Override
     public boolean onEventPreview(final Event event)
     {
-        if (isModal())
+        if (vaadinModality)
             return true; // why would they block click to other elements?
         return super.onEventPreview(event);
     }
