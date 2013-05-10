@@ -19,10 +19,10 @@ import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.EventId;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.client.ApplicationConnection;
+import com.vaadin.client.Paintable;
+import com.vaadin.client.UIDL;
+import com.vaadin.shared.EventId;
 
 /**
  * Client side CKEditor widget which communicates with the server. Messages from the
@@ -94,6 +94,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	/**
 	 * Called whenever an update is received from the server
 	 */
+	@Override
 	public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
 		clientToServer = client;
 		paintableId = uidl.getId();
