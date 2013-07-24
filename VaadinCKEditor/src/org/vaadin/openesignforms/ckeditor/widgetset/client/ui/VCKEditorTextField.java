@@ -263,6 +263,8 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	            clientToServer.updateVariable(paintableId, EventId.BLUR, "", false);
 			}
 			
+			// Even though CKEditor 4.2 introduced a change event, it doesn't appear to fire if the user stays in SOURCE mode,
+			// so while we do use the change event, we still are stuck with the blur listener to detect other such changes.
 			if (  ! readOnly ) {
 				String data = ckEditor.getData();
 				if ( ! data.equals(dataBeforeEdit) ) {
@@ -276,7 +278,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			
 	        if (sendToServer) {
 	            clientToServer.sendPendingVariableChanges();
-	        }
+			}
 		}
 	}
 

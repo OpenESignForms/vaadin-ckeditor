@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 10 May 2013
+Last updated: 23 July 2013
 
   USING CKEDITOR FOR VAADIN IN YOUR APPLICATION
   =============================================
@@ -54,12 +54,15 @@ under the Creative Commons Attribution 3.0 License.
 
   KNOWN ISSUES
   ============
-  * Need a better mechanism than the blur event to detect editor changes.
-    Apparently, CKEditor will support an official onchange event in the 4.2 release (http://dev.ckeditor.com/ticket/9794) 
-    that we hope will resolve this.
+  * Editor no longer expands/contracts with container resizing.
   
   CHANGELOG
   =========
+
+7.8.4 (23 July 2013)
+- Upgraded to CKEditor 4.2. Using the new "change" event, which the documentation points out could fire
+  even when no changes are done, so comparisons are still needed.
+- Upgraded to Vaadin 7.1.1.
 
 7.8.3 (10 May 2013)
 - Fixed the modal window issue.
