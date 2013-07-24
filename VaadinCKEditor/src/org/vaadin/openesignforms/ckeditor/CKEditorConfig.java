@@ -466,7 +466,7 @@ public class CKEditorConfig implements java.io.Serializable {
 		
 		disableSpellChecker();
 		setDisableNativeSpellChecker(false);
-		disableResizeEditor();
+		//disableResizeEditor();
 		setPasteFromWordNumberedHeadingToList(true);
 		//setPasteFromWordRemoveFontStyles(false); -- sadly, we want font color to be kept, but having this creates too much HTML mess
 		setPasteFromWordRemoveStyles(false);

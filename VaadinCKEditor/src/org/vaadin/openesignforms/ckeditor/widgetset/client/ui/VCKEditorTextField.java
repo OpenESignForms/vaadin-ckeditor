@@ -19,10 +19,10 @@ import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.EventId;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.client.ApplicationConnection;
+import com.vaadin.client.Paintable;
+import com.vaadin.client.UIDL;
+import com.vaadin.shared.EventId;
 
 /**
  * Client side CKEditor widget which communicates with the server. Messages from the
@@ -94,6 +94,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	/**
 	 * Called whenever an update is received from the server
 	 */
+	@Override
 	public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
 		clientToServer = client;
 		paintableId = uidl.getId();
@@ -262,6 +263,8 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	            clientToServer.updateVariable(paintableId, EventId.BLUR, "", false);
 			}
 			
+			// Even though CKEditor 4.2 introduced a change event, it doesn't appear to fire if the user stays in SOURCE mode,
+			// so while we do use the change event, we still are stuck with the blur listener to detect other such changes.
 			if (  ! readOnly ) {
 				String data = ckEditor.getData();
 				if ( ! data.equals(dataBeforeEdit) ) {
@@ -275,7 +278,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			
 	        if (sendToServer) {
 	            clientToServer.sendPendingVariableChanges();
-	        }
+			}
 		}
 	}
 

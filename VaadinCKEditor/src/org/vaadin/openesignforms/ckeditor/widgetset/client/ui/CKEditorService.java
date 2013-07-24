@@ -111,6 +111,7 @@ public class CKEditorService {
 	// because those operations resulted in BLUR then FOCUS events in rapid succession, causing the UI to update.
 	// But the 200 value is too long and we find that often the button acts faster than the BLUR can fire from CKEditor
 	// so Vaadin doesn't get the latest contents.
+	// Even though CKEditor 4.2 introduced a change event, it doesn't appear to fire if you stay in SOURCE mode, which many people do use.
 	public native static void reduceBlurDelay()
 	/*-{
 		$wnd.CKEDITOR.focusManager._.blurDelay = 20; // the default is 200 even if the documentation says it's only 100
