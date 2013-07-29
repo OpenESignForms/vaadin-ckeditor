@@ -6,8 +6,8 @@
 	<!-- <script src='ckeditor/ckeditor.js' /> -->
 
     <replace-with class="org.vaadin.openesignforms.ckeditor.widgetset.client.ui.ModalFixVWindow">
-        <when-type-is class="com.vaadin.terminal.gwt.client.ui.VWindow"/>
+        <when-type-is class="com.vaadin.client.ui.VWindow"/>
     </replace-with>
 
-    <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+    <inherits name="com.vaadin.DefaultWidgetSet" />
 </module>

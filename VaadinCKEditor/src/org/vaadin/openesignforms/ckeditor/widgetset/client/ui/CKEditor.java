@@ -78,7 +78,7 @@ public class CKEditor extends JavaScriptObject {
     	}, null, listener);
     	
     	// hook into the change events for ckEditor
-		this.on('saveSnapshot', function(ev) { 
+		this.on('change', function(ev) { 
 			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onChange()(); 
 		}, null, listener);
 		this.on('mode', function(ev) { 
@@ -86,17 +86,6 @@ public class CKEditor extends JavaScriptObject {
 		}, null, listener);
 		this.on('dataReady', function(ev) { 
 			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onDataReady()(); 
-		}, null, listener);
-		this.getCommand('undo').on( 'afterUndo', function(ev) { 
-			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onChange()(); 
-		}, null, listener);
-		this.getCommand('redo').on( 'afterRedo', function(ev) { 
-			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onChange()(); 
-		}, null, listener);
-		this.on('afterCommandExec', function( ev ) { 
-			if ( ev.data.command.canUndo !== false ) { 
-				ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onChange()(); 
-			} 
 		}, null, listener);
 
 	}-*/;
