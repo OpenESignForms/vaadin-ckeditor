@@ -20,8 +20,11 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ApplicationConnection;
+import com.vaadin.client.LayoutManager;
 import com.vaadin.client.Paintable;
 import com.vaadin.client.UIDL;
+import com.vaadin.client.ui.layout.ElementResizeEvent;
+import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.EventId;
 
 /**
@@ -65,6 +68,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	
 	private CKEditor ckEditor = null;
 	private boolean ckEditorIsReady = false;
+	private boolean resizeListenerInPlace = false;
 	
 	private LinkedList<String> protectedSourceList = null;
 	private HashMap<String,String> writerRules = null;
@@ -110,6 +114,18 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			return;
 		}
 			
+		if ( ! resizeListenerInPlace ) {
+			LayoutManager.get(client).addElementResizeListener(getElement(), new ElementResizeListener() {
+
+				@Override
+				public void onElementResize(ElementResizeEvent e) {
+					doResize();
+				}
+				
+			});
+			resizeListenerInPlace = true;
+		}
+		
 		if ( uidl.hasAttribute(ATTR_IMMEDIATE) ) {
 	 		immediate = uidl.getBooleanAttribute(ATTR_IMMEDIATE);
 		}

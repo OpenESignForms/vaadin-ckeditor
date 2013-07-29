@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 23 July 2013
+Last updated: 29 July 2013
 
   USING CKEDITOR FOR VAADIN IN YOUR APPLICATION
   =============================================
@@ -54,10 +54,12 @@ under the Creative Commons Attribution 3.0 License.
 
   KNOWN ISSUES
   ============
-  * Editor no longer expands/contracts with container resizing.
   
   CHANGELOG
   =========
+
+7.8.5 (29 July 2013)
+- Added ElementResizeListener to VCKEditorTextField widget so react to browser resizing.
 
 7.8.4 (23 July 2013)
 - Upgraded to CKEditor 4.2. Using the new "change" event, which the documentation points out could fire
