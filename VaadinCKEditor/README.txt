@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 29 July 2013
+Last updated: 3 September 2013
 
   USING CKEDITOR FOR VAADIN IN YOUR APPLICATION
   =============================================
@@ -57,6 +57,13 @@ under the Creative Commons Attribution 3.0 License.
   
   CHANGELOG
   =========
+
+7.8.6 (3 September 2013)
+- Added 'readOnly' setting for startup read-only mode: config.setReadOnly(true).
+- Fixed bug in change events so as not to lose any changes due to a conflict between the CKEditor's built-in
+  'change' event and our continued to need to also use the 'blur' event to detect changes, especially
+  for SOURCE mode as 'change' works great for WYSIWYG mode.
+- Upgraded to Vaadin 7.1.3.
 
 7.8.5 (29 July 2013)
 - Added ElementResizeListener to VCKEditorTextField widget so react to browser resizing.
