@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2012 Yozons, Inc.
+// Copyright (C) 2010-2013 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -81,6 +81,7 @@ public class CKEditor extends JavaScriptObject {
 		this.on('change', function(ev) { 
 			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onChange()(); 
 		}, null, listener);
+
 		this.on('mode', function(ev) { 
 			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onModeChange(Ljava/lang/String;)(ev.editor.mode); 
 		}, null, listener);

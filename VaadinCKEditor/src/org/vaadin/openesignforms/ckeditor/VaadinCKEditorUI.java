@@ -60,6 +60,9 @@ public class VaadinCKEditorUI extends UI {
 	]
 		 */
 		
+		final String editor1InitialValue = 
+				"<p>Thanks TinyMCEEditor for getting us started on the CKEditor integration.</p>\n\n<h1>Like TinyMCEEditor said, &quot;Vaadin rocks!&quot;</h1>\n\n<h1>And CKEditor is no slouch either.</h1>\n";
+
 		CKEditorConfig config1 = new CKEditorConfig();
 		config1.useCompactTags();
 		config1.disableElementsPath();
@@ -71,9 +74,6 @@ public class VaadinCKEditorUI extends UI {
 		ckEditorTextField1.setHeight("440px"); // account for 300px editor plus toolbars
 		mainView.addComponent(ckEditorTextField1);
 		
-		final String editor1InitialValue = 
-			"<p>Thanks TinyMCEEditor for getting us started on the CKEditor integration.</p><h1>Like TinyMCEEditor said, &quot;Vaadin rocks!&quot;</h1><h1>And CKEditor is no slouch either.</h1>";
-
 		ckEditorTextField1.setValue(editor1InitialValue);
 		ckEditorTextField1.addValueChangeListener(new Property.ValueChangeListener() {
 			private static final long serialVersionUID = -761434593559159149L;
@@ -122,7 +122,7 @@ public class VaadinCKEditorUI extends UI {
 		
 		// Now add in a second editor....
 		final String editor2InitialValue = 
-			"<p>Here is editor #2.</p><h1>Hope you find this useful in your Vaadin projects.</h1>";
+			"<p>Here is editor #2.</p>\n\n<p>Hope you find this useful in your Vaadin projects.</p>\n";
 
 		final CKEditorTextField ckEditorTextField2 = new CKEditorTextField();
 		ckEditorTextField2.setWidth("600px");
@@ -270,7 +270,7 @@ public class VaadinCKEditorUI extends UI {
 	}
 	
 	public String getVersion() {
-		return "7.8.5";
+		return "7.8.6";
 	}
 
 }

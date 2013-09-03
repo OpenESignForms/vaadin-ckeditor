@@ -23,6 +23,7 @@ import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.LayoutManager;
 import com.vaadin.client.Paintable;
 import com.vaadin.client.UIDL;
+import com.vaadin.client.VConsole;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.EventId;
@@ -262,9 +263,10 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			// Called if the user clicks the Save button. 
 			String data = ckEditor.getData();
 			if ( ! data.equals(dataBeforeEdit) ) {
-				clientToServer.updateVariable(paintableId, VAR_TEXT, data, true);
-				dataBeforeEdit = data; // update our image since we sent it to the server
+				clientToServer.updateVariable(paintableId, VAR_TEXT, data, false);
+				dataBeforeEdit = data;
 			}
+			clientToServer.sendPendingVariableChanges(); // ensure anything queued up goes now on SAVE
 		}
 	}
 
@@ -285,10 +287,8 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 				String data = ckEditor.getData();
 				if ( ! data.equals(dataBeforeEdit) ) {
 					clientToServer.updateVariable(paintableId, VAR_TEXT, data, false);
-		            if (immediate) {
-		            	sendToServer = true;
-		            	dataBeforeEdit = data; // let's only update our image if we're going to send new data to the server
-		            }
+	            	sendToServer = true;
+	            	dataBeforeEdit = data; 
 				}
 			}
 			
@@ -394,10 +394,8 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 		if ( ckEditor != null && ! readOnly ) {
 			String data = ckEditor.getData();
 			if ( ! data.equals(dataBeforeEdit) ) {
-				clientToServer.updateVariable(paintableId, VAR_TEXT, data, false);
-	            if (immediate) {
-	            	dataBeforeEdit = data; // let's only update our image if we're going to send new data to the server
-	            }
+				clientToServer.updateVariable(paintableId, VAR_TEXT, data, immediate);
+            	dataBeforeEdit = data;
 			}
 		}
 	}
@@ -408,10 +406,8 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			if ( ! readOnly ) {
 				String data = ckEditor.getData();
 				if ( ! data.equals(dataBeforeEdit) ) {
-					clientToServer.updateVariable(paintableId, VAR_TEXT, data, false);
-		            if (immediate) {
-		            	dataBeforeEdit = data; // let's only update our image if we're going to send new data to the server
-		            }
+					clientToServer.updateVariable(paintableId, VAR_TEXT, data, true);
+	            	dataBeforeEdit = data; 
 				}
 			}
 			

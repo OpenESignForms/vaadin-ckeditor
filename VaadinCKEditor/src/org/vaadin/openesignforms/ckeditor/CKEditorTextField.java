@@ -52,8 +52,16 @@ public class CKEditorTextField extends AbstractField<String>
 		setConfig(config);
 	}
 	
+	public CKEditorTextField(CKEditorConfig config, String initialValue) {
+		this();
+		setValue(initialValue);
+		setConfig(config);
+	}
+	
 	public void setConfig(CKEditorConfig config) {
 		this.config = config;
+		if ( config.isReadOnly() )
+			setReadOnly(true);
 	}
 	
 	public String getVersion() {
