@@ -42,11 +42,11 @@ public class VaadinCKEditorUI extends UI {
 		VerticalLayout mainView = new VerticalLayout();
 		setContent(mainView);
 		
-		//mainView.addComponent(new Button("Hit server"));
+		mainView.addComponent(new Button("Hit server"));
 		
-		//Label separator = new Label("&nbsp;");
-		//separator.setContentMode(ContentMode.HTML);
-		//mainView.addComponent(separator); 
+		Label separator = new Label("&nbsp;");
+		separator.setContentMode(ContentMode.HTML);
+		mainView.addComponent(separator); 
 
 
 		/* This is the full list as we know it in CKEditor 4.x
@@ -91,7 +91,6 @@ public class VaadinCKEditorUI extends UI {
 			}
 		});
 		
-		/*
 		Button resetTextButton1 = new Button("Reset editor #1");
 		resetTextButton1.addClickListener( new Button.ClickListener() {			
 			private static final long serialVersionUID = 2872667648717255301L;
@@ -123,7 +122,7 @@ public class VaadinCKEditorUI extends UI {
 				ckEditorTextField1.setViewWithoutEditor( ! ckEditorTextField1.isViewWithoutEditor() );
 			}
 		});
-	*/
+
 		Button toggleVisibleButton1 = new Button("Toggle visible editor #1");
 		toggleVisibleButton1.addClickListener( new Button.ClickListener() {			
 			private static final long serialVersionUID = -6715135605688427318L;
@@ -133,13 +132,13 @@ public class VaadinCKEditorUI extends UI {
 				ckEditorTextField1.setVisible( ! ckEditorTextField1.isVisible() );
 			}
 		});
-		HorizontalLayout buttonsLayout = new HorizontalLayout(/*resetTextButton1,toggleReadOnlyButton1,toggleViewWithoutEditorButton1,*/toggleVisibleButton1);
+		HorizontalLayout buttonsLayout = new HorizontalLayout(resetTextButton1,toggleReadOnlyButton1,toggleViewWithoutEditorButton1,toggleVisibleButton1);
 		buttonsLayout.setSpacing(true);
 		mainView.addComponent( buttonsLayout );
 
-		//separator = new Label("&nbsp;");
-		//separator.setContentMode(ContentMode.HTML);
-		//mainView.addComponent(separator); 
+		separator = new Label("&nbsp;");
+		separator.setContentMode(ContentMode.HTML);
+		mainView.addComponent(separator); 
 		
 		// Now add in a second editor....
 		final String editor2InitialValue = 
@@ -163,7 +162,7 @@ public class VaadinCKEditorUI extends UI {
 				Notification.show("CKEditor v" + ckEditorTextField2.getVersion() + "/" + getVersion() + " - #2 contents: " + event.getProperty().getValue().toString());
 			}
 		});
-		/*
+
 		Button resetTextButton2 = new Button("Reset editor #2");
 		resetTextButton2.addClickListener( new Button.ClickListener() {			
 			private static final long serialVersionUID = 4877506990872691752L;
@@ -195,7 +194,7 @@ public class VaadinCKEditorUI extends UI {
 				ckEditorTextField2.setViewWithoutEditor( ! ckEditorTextField2.isViewWithoutEditor() );
 			}
 		});
-		*/
+
 		Button toggleVisibleButton2 = new Button("Toggle visible editor #2");
 		toggleVisibleButton2.addClickListener( new Button.ClickListener() {			
 			private static final long serialVersionUID = -3804977370320346348L;
@@ -206,10 +205,10 @@ public class VaadinCKEditorUI extends UI {
 			}
 		});
 		
-		buttonsLayout = new HorizontalLayout(/*resetTextButton2,toggleReadOnlyButton2,toggleViewWithoutEditorButton2,*/toggleVisibleButton2);
+		buttonsLayout = new HorizontalLayout(resetTextButton2,toggleReadOnlyButton2,toggleViewWithoutEditorButton2,toggleVisibleButton2);
 		buttonsLayout.setSpacing(true);
 		mainView.addComponent( buttonsLayout );
-/*
+
 		separator = new Label("&nbsp;");
 		separator.setContentMode(ContentMode.HTML);
 		mainView.addComponent(separator); 
@@ -307,7 +306,6 @@ public class VaadinCKEditorUI extends UI {
 	                event.getButton().getUI().addWindow(sub);
 	        }
         }));
-        */
 	}
 	
 	public String getVersion() {
