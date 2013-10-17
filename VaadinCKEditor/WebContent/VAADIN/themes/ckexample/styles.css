@@ -1,4 +1,4 @@
-@import url(../reindeer/styles.css);
+@import url(../reindeer/legacy-styles.css);
 
 /*
 	Since the editor is placed in a SPAN inside our placeholder DIV, we can use the following to deal with all of them.
