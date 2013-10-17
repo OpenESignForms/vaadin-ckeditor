@@ -27,14 +27,14 @@ public class CKEditorService {
 	private static boolean libraryLoaded = false;
 	private static List<ScheduledCommand> afterLoadedStack = new ArrayList<ScheduledCommand>();
 	
-	public static void loadLibrary(ScheduledCommand afterLoad) {
-		if (!libraryLoadInited) {
+	public static synchronized void loadLibrary(ScheduledCommand afterLoad) {
+		if (! libraryLoadInited) {
+			libraryLoadInited = true;
 			String url = GWT.getModuleBaseURL() + "ckeditor/ckeditor.js";
 			ScriptElement se = Document.get().createScriptElement();
 			se.setSrc(url);
 			se.setType("text/javascript");
 			Document.get().getElementsByTagName("head").getItem(0).appendChild(se);
-			libraryLoadInited = true;
 			Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {				
 				@Override
 				public boolean execute() {

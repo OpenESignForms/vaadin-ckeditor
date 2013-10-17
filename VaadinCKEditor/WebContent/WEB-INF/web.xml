@@ -20,6 +20,12 @@
     <param-value>false</param-value>
   </context-param>
    
+  <!-- Time in seconds for the client side heartbeats to detect dead UIs when a browser is closed or navigates away. Default: 300 -->
+  <context-param>
+    <param-name>heartbeatInterval</param-name>
+    <param-value>300</param-value>
+  </context-param>
+
   <servlet>
   	<servlet-name>CKEditorDemoVaadinApplication</servlet-name>
   	<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
@@ -38,6 +44,11 @@
   		<param-name>closeIdleSessions</param-name>
   		<param-value>true</param-value>
   	</init-param>
+  	<init-param>
+    	<param-name>pushmode</param-name>
+    	<param-value>disabled</param-value> <!-- Not currently using PUSH specifically in OpenESF -->
+ 	</init-param>
+	<async-supported>true</async-supported> <!-- Enable if using PUSH -->
   </servlet>
 
   <servlet-mapping>

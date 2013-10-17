@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 3 September 2013
+Last updated: 17 October 2013
 
   USING CKEDITOR FOR VAADIN IN YOUR APPLICATION
   =============================================
@@ -34,7 +34,7 @@ This software component is licensed under Apache License 2.0.
 See http://www.apache.org/licenses/LICENSE-2.0.html for more details.
 
 This component was written initially by Yozons, Inc. (www.yozons.com) 
-for its Open eSignForms project (open.esignforms.com) -- not required to use this component -- 
+for its Open eSignForms project (http://open.esignforms.com) -- not required to use this component -- 
 which is separately licensed under the Affero GPL as well as a commercial licensed.
 
 The code framework was initially jump-started using the Vaadin incubator
@@ -54,9 +54,14 @@ under the Creative Commons Attribution 3.0 License.
 
   KNOWN ISSUES
   ============
+  See: https://code.google.com/p/vaadin-ckeditor/issues/list
   
   CHANGELOG
   =========
+
+7.8.7 (17 October 2013)
+- Upgraded to CKEditor 4.2.2.
+- Upgraded to Vaadin 7.1.7.
 
 7.8.6 (3 September 2013)
 - Added 'readOnly' setting for startup read-only mode: config.setReadOnly(true).

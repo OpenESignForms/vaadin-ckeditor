@@ -8,11 +8,14 @@
 package org.vaadin.openesignforms.ckeditor;
 
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.UI;
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -39,7 +42,11 @@ public class VaadinCKEditorUI extends UI {
 		VerticalLayout mainView = new VerticalLayout();
 		setContent(mainView);
 		
-		mainView.addComponent(new Button("Hit server"));
+		//mainView.addComponent(new Button("Hit server"));
+		
+		//Label separator = new Label("&nbsp;");
+		//separator.setContentMode(ContentMode.HTML);
+		//mainView.addComponent(separator); 
 
 
 		/* This is the full list as we know it in CKEditor 4.x
@@ -84,6 +91,7 @@ public class VaadinCKEditorUI extends UI {
 			}
 		});
 		
+		/*
 		Button resetTextButton1 = new Button("Reset editor #1");
 		resetTextButton1.addClickListener( new Button.ClickListener() {			
 			private static final long serialVersionUID = 2872667648717255301L;
@@ -95,7 +103,6 @@ public class VaadinCKEditorUI extends UI {
 				}
 			}
 		});
-		mainView.addComponent(resetTextButton1);
 		
 		Button toggleReadOnlyButton1 = new Button("Toggle read-only editor #1");
 		toggleReadOnlyButton1.addClickListener( new Button.ClickListener() {			
@@ -106,7 +113,6 @@ public class VaadinCKEditorUI extends UI {
 				ckEditorTextField1.setReadOnly( ! ckEditorTextField1.isReadOnly() );
 			}
 		});
-		mainView.addComponent(toggleReadOnlyButton1);
 
 		Button toggleViewWithoutEditorButton1 = new Button("Toggle view-without-editor #1");
 		toggleViewWithoutEditorButton1.addClickListener( new Button.ClickListener() {			
@@ -117,8 +123,23 @@ public class VaadinCKEditorUI extends UI {
 				ckEditorTextField1.setViewWithoutEditor( ! ckEditorTextField1.isViewWithoutEditor() );
 			}
 		});
-		mainView.addComponent(toggleViewWithoutEditorButton1);
+	*/
+		Button toggleVisibleButton1 = new Button("Toggle visible editor #1");
+		toggleVisibleButton1.addClickListener( new Button.ClickListener() {			
+			private static final long serialVersionUID = -6715135605688427318L;
 
+			@Override
+			public void buttonClick(ClickEvent event) {
+				ckEditorTextField1.setVisible( ! ckEditorTextField1.isVisible() );
+			}
+		});
+		HorizontalLayout buttonsLayout = new HorizontalLayout(/*resetTextButton1,toggleReadOnlyButton1,toggleViewWithoutEditorButton1,*/toggleVisibleButton1);
+		buttonsLayout.setSpacing(true);
+		mainView.addComponent( buttonsLayout );
+
+		//separator = new Label("&nbsp;");
+		//separator.setContentMode(ContentMode.HTML);
+		//mainView.addComponent(separator); 
 		
 		// Now add in a second editor....
 		final String editor2InitialValue = 
@@ -142,7 +163,7 @@ public class VaadinCKEditorUI extends UI {
 				Notification.show("CKEditor v" + ckEditorTextField2.getVersion() + "/" + getVersion() + " - #2 contents: " + event.getProperty().getValue().toString());
 			}
 		});
-		
+		/*
 		Button resetTextButton2 = new Button("Reset editor #2");
 		resetTextButton2.addClickListener( new Button.ClickListener() {			
 			private static final long serialVersionUID = 4877506990872691752L;
@@ -154,7 +175,6 @@ public class VaadinCKEditorUI extends UI {
 				}
 			}
 		});
-		mainView.addComponent(resetTextButton2);
 		
 		Button toggleReadOnlyButton2 = new Button("Toggle read-only editor #2");
 		toggleReadOnlyButton2.addClickListener( new Button.ClickListener() {			
@@ -165,7 +185,6 @@ public class VaadinCKEditorUI extends UI {
 				ckEditorTextField2.setReadOnly( ! ckEditorTextField2.isReadOnly() );
 			}
 		});
-		mainView.addComponent(toggleReadOnlyButton2);
 
 		Button toggleViewWithoutEditorButton2 = new Button("Toggle view-without-editor #2");
 		toggleViewWithoutEditorButton2.addClickListener( new Button.ClickListener() {			
@@ -176,9 +195,30 @@ public class VaadinCKEditorUI extends UI {
 				ckEditorTextField2.setViewWithoutEditor( ! ckEditorTextField2.isViewWithoutEditor() );
 			}
 		});
-		mainView.addComponent(toggleViewWithoutEditorButton2);
+		*/
+		Button toggleVisibleButton2 = new Button("Toggle visible editor #2");
+		toggleVisibleButton2.addClickListener( new Button.ClickListener() {			
+			private static final long serialVersionUID = -3804977370320346348L;
 
-		mainView.addComponent(new Button("Open Modal Subwindow", new ClickListener() {                      
+			@Override
+			public void buttonClick(ClickEvent event) {
+				ckEditorTextField2.setVisible( ! ckEditorTextField2.isVisible() );
+			}
+		});
+		
+		buttonsLayout = new HorizontalLayout(/*resetTextButton2,toggleReadOnlyButton2,toggleViewWithoutEditorButton2,*/toggleVisibleButton2);
+		buttonsLayout.setSpacing(true);
+		mainView.addComponent( buttonsLayout );
+/*
+		separator = new Label("&nbsp;");
+		separator.setContentMode(ContentMode.HTML);
+		mainView.addComponent(separator); 
+
+		buttonsLayout = new HorizontalLayout();
+		buttonsLayout.setSpacing(true);
+		mainView.addComponent( buttonsLayout );
+		
+		buttonsLayout.addComponent(new Button("Open Modal Subwindow", new ClickListener() {                      
 			private static final long serialVersionUID = 7661931879334525618L;
 
 			@Override
@@ -217,7 +257,7 @@ public class VaadinCKEditorUI extends UI {
             }
         }));
 
-		mainView.addComponent(new Button("Open Non-Modal Subwindow with 100% Height", new ClickListener() {                      
+		buttonsLayout.addComponent(new Button("Open Non-Modal Subwindow with 100% Height", new ClickListener() {                      
 			private static final long serialVersionUID = 8895747367120494167L;
 
 			@Override
@@ -267,10 +307,11 @@ public class VaadinCKEditorUI extends UI {
 	                event.getButton().getUI().addWindow(sub);
 	        }
         }));
+        */
 	}
 	
 	public String getVersion() {
-		return "7.8.6";
+		return "7.8.7";
 	}
 
 }
