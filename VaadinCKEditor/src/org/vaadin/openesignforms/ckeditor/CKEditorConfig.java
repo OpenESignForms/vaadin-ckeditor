@@ -17,7 +17,7 @@ import java.util.Set;
  * tested/common options, or just set the options using a JavaScript/JSON string as you prefer.
  */
 public class CKEditorConfig implements java.io.Serializable {
-	private static final long serialVersionUID = -3675920093002174427L;
+	private static final long serialVersionUID = -2557439236685703040L;
 
 	// If this is set, we'll just use it and ignore everything else.
 	protected String inPageConfig;
@@ -52,6 +52,7 @@ public class CKEditorConfig implements java.io.Serializable {
 	protected Boolean pasteFromWordPromptCleanup = null;
 	protected String startupMode = null; // either "source" or "wysiwyg" (defaults to wysiwyg, so generally only used if you'd like to startup in source mode)
 	protected Boolean startupFocus = null;
+	protected Boolean readOnly = null; // for startup readOnly setting
 	protected String[] contentsCssFiles = null;
 	protected String fontNames = null;
 	protected String stylesSet = null;
@@ -60,7 +61,7 @@ public class CKEditorConfig implements java.io.Serializable {
 	protected Boolean toolbarStartupExpanded = null;
 	protected LinkedList<String> templates_files = null;
 	protected Boolean templates_replaceContent = null;
-	
+
 	protected String allowedContent = null; // Advanced content filtering added in CKEditor 4.1
 	protected String extraAllowedContent = null;
 	
@@ -210,6 +211,10 @@ public class CKEditorConfig implements java.io.Serializable {
 			appendJSONConfig(config, "startupFocus : " + startupFocus);
 		}
 
+		if ( readOnly != null ) {
+			appendJSONConfig(config, "readOnly : " + readOnly);
+		}
+		
 		if ( skin != null ) {
 			appendJSONConfig(config, "skin : '" + skin + "'");
 		}
@@ -662,6 +667,13 @@ public class CKEditorConfig implements java.io.Serializable {
 	
 	public void setStartupFocus(boolean v) {
 		startupFocus = v;
+	}
+
+	public  boolean isReadOnly() {
+		return readOnly != null && readOnly.booleanValue();
+	}
+	public void setReadOnly(boolean v) {
+		readOnly = v;
 	}
 
 	/**
