@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 17 October 2013
+Last updated: 25 November 2013
 
   USING CKEDITOR FOR VAADIN IN YOUR APPLICATION
   =============================================
@@ -58,6 +58,10 @@ under the Creative Commons Attribution 3.0 License.
   
   CHANGELOG
   =========
+
+7.8.8 (25 November 2013)
+- Upgraded to CKEditor 4.3.
+- Upgraded to Vaadin 7.1.8.
 
 7.8.7 (17 October 2013)
 - Upgraded to CKEditor 4.2.2.
