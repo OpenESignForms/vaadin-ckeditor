@@ -150,7 +150,7 @@ public class VaadinCKEditorUI extends UI {
 		
 		CKEditorConfig config2 = new CKEditorConfig();
 		config2.addCustomToolbarLine("{ items : ['Source','Styles','Bold','VaadinSave','-','Undo','Redo','-','NumberedList','BulletedList'] }");
-		config2.enableVaadinSavePlugin();
+		config2.enableCtrlSWithVaadinSavePlugin();
 		config2.addToRemovePlugins("scayt");
 		ckEditorTextField2.setConfig(config2);
 		ckEditorTextField2.setValue(editor2InitialValue);
@@ -161,6 +161,16 @@ public class VaadinCKEditorUI extends UI {
 			public void valueChange(ValueChangeEvent event) {
 				Notification.show("CKEditor v" + ckEditorTextField2.getVersion() + "/" + getVersion() + " - #2 contents: " + event.getProperty().getValue().toString());
 			}
+		});
+
+		ckEditorTextField2.addVaadinSaveListener( new CKEditorTextField.VaadinSaveListener() {
+			private static final long serialVersionUID = 3763779235559050613L;
+
+			@Override
+			public void vaadinSave(CKEditorTextField editor) {
+				Notification.show("CKEditor v" + ckEditorTextField2.getVersion() + "/" + getVersion() + " - #2 VaadinSave button pressed.");
+			}
+			
 		});
 
 		Button resetTextButton2 = new Button("Reset editor #2");
@@ -309,7 +319,7 @@ public class VaadinCKEditorUI extends UI {
 	}
 	
 	public String getVersion() {
-		return "7.8.9";
+		return "7.9.0";
 	}
 
 }
