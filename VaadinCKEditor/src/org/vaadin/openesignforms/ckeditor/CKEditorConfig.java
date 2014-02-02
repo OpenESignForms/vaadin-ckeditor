@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2013 Yozons, Inc.
+// Copyright (C) 2010-2014 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -17,7 +17,7 @@ import java.util.Set;
  * tested/common options, or just set the options using a JavaScript/JSON string as you prefer.
  */
 public class CKEditorConfig implements java.io.Serializable {
-	private static final long serialVersionUID = -2557439236685703040L;
+	private static final long serialVersionUID = -2819105715113497805L;
 
 	// If this is set, we'll just use it and ignore everything else.
 	protected String inPageConfig;
@@ -31,6 +31,7 @@ public class CKEditorConfig implements java.io.Serializable {
 	// Otherwise, we'll build the config based on settings contained here
 	protected HashMap<String,String> writerRules = null;
 	protected String writerIndentationChars = null;
+	protected HashMap<Integer,String> keystrokeMappings = null;
 	protected LinkedList<String> extraPlugins = null;
 	protected LinkedList<String> removePlugins = null;
 	protected LinkedList<String> customToolbarLines = null;
@@ -404,6 +405,34 @@ public class CKEditorConfig implements java.io.Serializable {
 		writerRules.put( tagName, jsRule );
 	}
 	
+	public boolean hasKeystrokeMappings() {
+		return keystrokeMappings != null && ! keystrokeMappings.isEmpty();
+	}
+	public Set<Integer> getKeystrokes() {
+		return keystrokeMappings == null ? new HashSet<Integer>() : keystrokeMappings.keySet();
+	}
+	public String getKeystrokeCommandByKeystroke(Integer keystroke) {
+		return keystrokeMappings == null ? null : keystrokeMappings.get(keystroke);
+	}
+	public static int CKEDITOR_KEYSTROKE_ALT = 0x440000;
+	public static int CKEDITOR_KEYSTROKE_CTRL = 0x110000;
+	public static int CKEDITOR_KEYSTROKE_SHIFT = 0x220000;
+	public synchronized void addKeystrokeMapping(int keystroke, String command) {
+		if ( keystrokeMappings == null ) {
+			keystrokeMappings = new HashMap<Integer,String>();
+		}
+		keystrokeMappings.put( keystroke, command );
+	}
+	/**
+	 * Enabled the vaadinsave plugin and sets the keystroke mapping for CTRL-S to trigger it.
+	 * @see #enableVaadinSavePlugin()
+	 * @see #addKeystrokeMapping
+	 */
+	public void enableCtrlSWithVaadinSavePlugin() {
+		enableVaadinSavePlugin(); // You must have the vaadin save plugin to use this keystroke mapping
+		addKeystrokeMapping(CKEDITOR_KEYSTROKE_CTRL + 83, "vaadinsave");  // CTRL-S triggers vaadinsave
+	}
+
 	// A convenience method to set a bunch of compact HTML rules.
 	public void useCompactTags() {
 		addWriterRules("p",  "{indent : false, breakBeforeOpen : true, breakAfterOpen : false, breakBeforeClose : false, breakAfterClose : true}" );
@@ -441,10 +470,11 @@ public class CKEditorConfig implements java.io.Serializable {
 	
 	/**
 	 * This enables the vaadinsave plugin.  You will also need a custom toolbar with the entry 'VaadinSave' included to put it 
-	 * the specified position.
+	 * the specified position. If you'd also like CTRL-S to trigger, call enableCtrlSWithVaadinSavePlugin() instead.
+	 * @see #enableCtrlSWithVaadinSavePlugin()
 	 */
 	public void enableVaadinSavePlugin() {
-		addToExtraPlugins("vaadinsave"); 
+		addToExtraPlugins("vaadinsave");
 	}
 
 	
@@ -481,6 +511,8 @@ public class CKEditorConfig implements java.io.Serializable {
 		addWriterRules("script", "{indent : false, breakBeforeOpen : true, breakAfterOpen : true, breakBeforeClose : true, breakAfterClose : true}" );
 		addWriterRules("style",  "{indent : false, breakBeforeOpen : true, breakAfterOpen : true, breakBeforeClose : true, breakAfterClose : true}" );
 		setWriterIndentationChars("    ");
+		
+		enableCtrlSWithVaadinSavePlugin();
 
 		addFontName("Calibri/Calibri, Arial, Helvetica, sans-serif");
 		
