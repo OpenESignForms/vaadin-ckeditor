@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 31 January 2014
+Last updated: 2 February 2014
 
   USING CKEDITOR FOR VAADIN IN YOUR APPLICATION
   =============================================
@@ -58,6 +58,15 @@ under the Creative Commons Attribution 3.0 License.
   
   CHANGELOG
   =========
+
+7.9.0 (2 February 2014)
+- Added 'addKeystrokeMapping' to set keystroke handlers via CKEditorConfig: config.addKeystrokeMapping(int keystroke,String command)
+- Added 'enableCtrlSWithVaadinSavePlugin' to CKEditorConfig to allow CTRL-S to also save via the 'vaadinsave' plugin. Note that this
+  will automatically enable the vaadinsave plugin (config.enableVaadinSavePlugin()) as it's required for the keystroke mapping to take place.
+- Changed the 'vaadinsave' plugin to work in both WYSIWYG and SOURCE modes.
+- Added CKEditorTextField.addVaadinSaveListener() method to be notified when the vaadinsave button is pressed. Previously, this was
+  only noted by a ValueChangeListener(), though that could be called if you changed the editor and then clicked 
+  to remove focus from the editor. The callback listener allows you to know that it was the vaadinsave button or CTRL-S.
 
 7.8.9 (31 January 2014)
 - Upgraded to CKEditor 4.3.2.
