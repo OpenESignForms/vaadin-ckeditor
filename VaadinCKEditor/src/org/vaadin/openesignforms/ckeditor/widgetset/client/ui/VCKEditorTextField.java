@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2013 Yozons, Inc.
+// Copyright (C) 2010-2014 Yozons, Inc.
 // CKEditor for Vaadin- Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -46,10 +46,13 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	public static final String ATTR_WRITERRULES_TAGNAME = "writerRules.tagName";
 	public static final String ATTR_WRITERRULES_JSRULE = "writerRules.jsRule";
 	public static final String ATTR_WRITER_INDENTATIONCHARS = "writerIndentationChars";
+	public static final String ATTR_KEYSTROKES_KEYSTROKE = "keystrokes.keystroke";
+	public static final String ATTR_KEYSTROKES_COMMAND = "keystrokes.command";
 	public static final String ATTR_INSERT_HTML = "insert_html";
 	public static final String ATTR_INSERT_TEXT = "insert_text";
 	public static final String ATTR_PROTECTED_BODY = "protected_body";
 	public static final String VAR_TEXT = "text";
+	public static final String VAR_VAADIN_SAVE_BUTTON_PRESSED = "vaadinsave";
 	public static final String VAR_VERSION = "version";
 	
 	private static String ckeditorVersion;
@@ -74,6 +77,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	private LinkedList<String> protectedSourceList = null;
 	private HashMap<String,String> writerRules = null;
 	private String writerIndentationChars = null;
+	private HashMap<Integer,String> keystrokeMappings = null;
 	
 	private int tabIndex;
 	private boolean setFocusAfterReady;
@@ -197,6 +201,22 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 				++i;
 			}
 			
+			// See if we have any keystrokes
+			i = 0;
+			while( true ) {
+				if ( ! uidl.hasAttribute(ATTR_KEYSTROKES_KEYSTROKE+i)  ) {
+					break;
+				}
+				// Save the keystrokes until our instance is ready
+				int keystroke = uidl.getIntAttribute(ATTR_KEYSTROKES_KEYSTROKE+i);
+				String command  = uidl.getStringAttribute(ATTR_KEYSTROKES_COMMAND+i);
+				if ( keystrokeMappings == null ) {
+					keystrokeMappings = new HashMap<Integer,String>();
+				}
+				keystrokeMappings.put(keystroke, command);
+				++i;
+			}
+			
 			// See if we have any protected source regexs
 			i = 0;
 			while( true ) {
@@ -266,6 +286,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 				clientToServer.updateVariable(paintableId, VAR_TEXT, data, false);
 				dataBeforeEdit = data;
 			}
+			clientToServer.updateVariable(paintableId, VAR_VAADIN_SAVE_BUTTON_PRESSED,"",false); // inform that the button was pressed too
 			clientToServer.sendPendingVariableChanges(); // ensure anything queued up goes now on SAVE
 		}
 	}
@@ -324,6 +345,14 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 		if ( writerIndentationChars != null ) {
 			ckEditor.setWriterIndentationChars(writerIndentationChars);
 			writerIndentationChars = null;
+		}
+		
+		if ( keystrokeMappings != null ) {
+			Set<Integer> keystrokeSet = keystrokeMappings.keySet();
+			for( Integer keystroke : keystrokeSet ) {
+				ckEditor.setKeystroke(keystroke, keystrokeMappings.get(keystroke));
+			}
+			keystrokeMappings = null; // don't need them anymore
 		}
 		
 		if ( protectedSourceList != null ) {
