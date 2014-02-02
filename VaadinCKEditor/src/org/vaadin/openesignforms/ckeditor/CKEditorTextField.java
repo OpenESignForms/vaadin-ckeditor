@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2013 Yozons, Inc.
+// Copyright (C) 2010-2014 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -8,6 +8,8 @@
 //
 package org.vaadin.openesignforms.ckeditor;
 
+import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,7 +33,7 @@ import com.vaadin.ui.LegacyComponent;
  */
 public class CKEditorTextField extends AbstractField<String> 
 	implements FieldEvents.BlurNotifier, FieldEvents.FocusNotifier, Component.Focusable, LegacyComponent  {
-	private static final long serialVersionUID = 5305686789639771320L;
+	private static final long serialVersionUID = 8368712158261928619L;
 
 	private CKEditorConfig config;
 	private String version = "unknown";
@@ -40,6 +42,7 @@ public class CKEditorTextField extends AbstractField<String>
 	private boolean protectedBody = false;
 	private boolean viewWithoutEditor = false;
 	private boolean focusRequested = false;
+	protected LinkedList<VaadinSaveListener> vaadinSaveListenerList;
 
 	public CKEditorTextField() {
 		super.setValue("");
@@ -105,6 +108,16 @@ public class CKEditorTextField extends AbstractField<String>
 				target.addAttribute(VCKEditorTextField.ATTR_WRITER_INDENTATIONCHARS, config.getWriterIndentationChars());
 			}
 			
+			if ( config.hasKeystrokeMappings() ) {
+				int i = 0;
+				Set<Integer> keystrokeSet = config.getKeystrokes();
+				for( Integer keystroke : keystrokeSet ) {
+					target.addAttribute(VCKEditorTextField.ATTR_KEYSTROKES_KEYSTROKE+i, keystroke);
+					target.addAttribute(VCKEditorTextField.ATTR_KEYSTROKES_COMMAND+i, config.getKeystrokeCommandByKeystroke(keystroke));
+					++i;
+				}
+			}
+			
 			if ( config.hasProtectedSource() ) {
 				int i = 0;
 				for( String protectedSourceRegex : config.getProtectedSource() ) {
@@ -163,6 +176,11 @@ public class CKEditorTextField extends AbstractField<String>
         		//System.out.println("*** TRACE FROM CLIENT changeVariables() - new value (" + newValue.length() + ") >>>" + newValue + "<<< " + System.currentTimeMillis());
                 setValue(newValue, true);
             }
+        }
+        
+        // See if the vaadinsave button was pressed
+        if (variables.containsKey(VCKEditorTextField.VAR_VAADIN_SAVE_BUTTON_PRESSED) && ! isReadOnly()) {
+        	notifyVaadinSaveListeners();
         }
     }
 
@@ -257,5 +275,31 @@ public class CKEditorTextField extends AbstractField<String>
 
 	public boolean isProtectedBody() {
 		return protectedBody;
+	}
+	
+	
+	public synchronized void addVaadinSaveListener(VaadinSaveListener listener) {
+		if ( vaadinSaveListenerList == null )
+			vaadinSaveListenerList = new LinkedList<VaadinSaveListener>();
+		vaadinSaveListenerList.add(listener);
+	}
+	public synchronized void removeVaadinSaveListener(VaadinSaveListener listener) {
+		if ( vaadinSaveListenerList != null )
+			vaadinSaveListenerList.remove(listener);
+	}
+	synchronized void notifyVaadinSaveListeners() {
+		if ( vaadinSaveListenerList != null ) {
+			for( VaadinSaveListener listener : vaadinSaveListenerList )
+				listener.vaadinSave(this);
+		}
+	}
+	
+	public interface VaadinSaveListener extends Serializable {
+		/**
+	     * Notifies this listener that the vaadinsave button in the editor was pressed.
+	     * 
+	     * @param editor the CKEditorTextField that was saved
+	     */
+	    public void vaadinSave(CKEditorTextField editor);
 	}
 }
