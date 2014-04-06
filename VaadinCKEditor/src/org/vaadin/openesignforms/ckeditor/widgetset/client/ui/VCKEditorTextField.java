@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2013 Yozons, Inc.
+// Copyright (C) 2010-2014 Yozons, Inc.
 // CKEditor for Vaadin- Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -19,10 +19,14 @@ import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.terminal.gwt.client.ApplicationConnection;
-import com.vaadin.terminal.gwt.client.EventId;
-import com.vaadin.terminal.gwt.client.Paintable;
-import com.vaadin.terminal.gwt.client.UIDL;
+import com.vaadin.client.ApplicationConnection;
+import com.vaadin.client.LayoutManager;
+import com.vaadin.client.Paintable;
+import com.vaadin.client.UIDL;
+import com.vaadin.client.VConsole;
+import com.vaadin.client.ui.layout.ElementResizeEvent;
+import com.vaadin.client.ui.layout.ElementResizeListener;
+import com.vaadin.shared.EventId;
 
 /**
  * Client side CKEditor widget which communicates with the server. Messages from the
@@ -42,10 +46,13 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	public static final String ATTR_WRITERRULES_TAGNAME = "writerRules.tagName";
 	public static final String ATTR_WRITERRULES_JSRULE = "writerRules.jsRule";
 	public static final String ATTR_WRITER_INDENTATIONCHARS = "writerIndentationChars";
+	public static final String ATTR_KEYSTROKES_KEYSTROKE = "keystrokes.keystroke";
+	public static final String ATTR_KEYSTROKES_COMMAND = "keystrokes.command";
 	public static final String ATTR_INSERT_HTML = "insert_html";
 	public static final String ATTR_INSERT_TEXT = "insert_text";
 	public static final String ATTR_PROTECTED_BODY = "protected_body";
 	public static final String VAR_TEXT = "text";
+	public static final String VAR_VAADIN_SAVE_BUTTON_PRESSED = "vaadinsave";
 	public static final String VAR_VERSION = "version";
 	
 	private static String ckeditorVersion;
@@ -65,10 +72,12 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	
 	private CKEditor ckEditor = null;
 	private boolean ckEditorIsReady = false;
+	private boolean resizeListenerInPlace = false;
 	
 	private LinkedList<String> protectedSourceList = null;
 	private HashMap<String,String> writerRules = null;
 	private String writerIndentationChars = null;
+	private HashMap<Integer,String> keystrokeMappings = null;
 	
 	private int tabIndex;
 	private boolean setFocusAfterReady;
@@ -94,6 +103,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	/**
 	 * Called whenever an update is received from the server
 	 */
+	@Override
 	public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
 		clientToServer = client;
 		paintableId = uidl.getId();
@@ -109,6 +119,18 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			return;
 		}
 			
+		if ( ! resizeListenerInPlace ) {
+			LayoutManager.get(client).addElementResizeListener(getElement(), new ElementResizeListener() {
+
+				@Override
+				public void onElementResize(ElementResizeEvent e) {
+					doResize();
+				}
+				
+			});
+			resizeListenerInPlace = true;
+		}
+		
 		if ( uidl.hasAttribute(ATTR_IMMEDIATE) ) {
 	 		immediate = uidl.getBooleanAttribute(ATTR_IMMEDIATE);
 		}
@@ -179,6 +201,22 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 				++i;
 			}
 			
+			// See if we have any keystrokes
+			i = 0;
+			while( true ) {
+				if ( ! uidl.hasAttribute(ATTR_KEYSTROKES_KEYSTROKE+i)  ) {
+					break;
+				}
+				// Save the keystrokes until our instance is ready
+				int keystroke = uidl.getIntAttribute(ATTR_KEYSTROKES_KEYSTROKE+i);
+				String command  = uidl.getStringAttribute(ATTR_KEYSTROKES_COMMAND+i);
+				if ( keystrokeMappings == null ) {
+					keystrokeMappings = new HashMap<Integer,String>();
+				}
+				keystrokeMappings.put(keystroke, command);
+				++i;
+			}
+			
 			// See if we have any protected source regexs
 			i = 0;
 			while( true ) {
@@ -245,9 +283,11 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			// Called if the user clicks the Save button. 
 			String data = ckEditor.getData();
 			if ( ! data.equals(dataBeforeEdit) ) {
-				clientToServer.updateVariable(paintableId, VAR_TEXT, data, true);
-				dataBeforeEdit = data; // update our image since we sent it to the server
+				clientToServer.updateVariable(paintableId, VAR_TEXT, data, false);
+				dataBeforeEdit = data;
 			}
+			clientToServer.updateVariable(paintableId, VAR_VAADIN_SAVE_BUTTON_PRESSED,"",false); // inform that the button was pressed too
+			clientToServer.sendPendingVariableChanges(); // ensure anything queued up goes now on SAVE
 		}
 	}
 
@@ -262,20 +302,20 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	            clientToServer.updateVariable(paintableId, EventId.BLUR, "", false);
 			}
 			
+			// Even though CKEditor 4.2 introduced a change event, it doesn't appear to fire if the user stays in SOURCE mode,
+			// so while we do use the change event, we still are stuck with the blur listener to detect other such changes.
 			if (  ! readOnly ) {
 				String data = ckEditor.getData();
 				if ( ! data.equals(dataBeforeEdit) ) {
 					clientToServer.updateVariable(paintableId, VAR_TEXT, data, false);
-		            if (immediate) {
-		            	sendToServer = true;
-		            	dataBeforeEdit = data; // let's only update our image if we're going to send new data to the server
-		            }
+	            	sendToServer = true;
+	            	dataBeforeEdit = data; 
 				}
 			}
 			
 	        if (sendToServer) {
 	            clientToServer.sendPendingVariableChanges();
-	        }
+			}
 		}
 	}
 
@@ -305,6 +345,14 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 		if ( writerIndentationChars != null ) {
 			ckEditor.setWriterIndentationChars(writerIndentationChars);
 			writerIndentationChars = null;
+		}
+		
+		if ( keystrokeMappings != null ) {
+			Set<Integer> keystrokeSet = keystrokeMappings.keySet();
+			for( Integer keystroke : keystrokeSet ) {
+				ckEditor.setKeystroke(keystroke, keystrokeMappings.get(keystroke));
+			}
+			keystrokeMappings = null; // don't need them anymore
 		}
 		
 		if ( protectedSourceList != null ) {
@@ -375,10 +423,8 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 		if ( ckEditor != null && ! readOnly ) {
 			String data = ckEditor.getData();
 			if ( ! data.equals(dataBeforeEdit) ) {
-				clientToServer.updateVariable(paintableId, VAR_TEXT, data, false);
-	            if (immediate) {
-	            	dataBeforeEdit = data; // let's only update our image if we're going to send new data to the server
-	            }
+				clientToServer.updateVariable(paintableId, VAR_TEXT, data, immediate);
+            	dataBeforeEdit = data;
 			}
 		}
 	}
@@ -389,10 +435,8 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			if ( ! readOnly ) {
 				String data = ckEditor.getData();
 				if ( ! data.equals(dataBeforeEdit) ) {
-					clientToServer.updateVariable(paintableId, VAR_TEXT, data, false);
-		            if (immediate) {
-		            	dataBeforeEdit = data; // let's only update our image if we're going to send new data to the server
-		            }
+					clientToServer.updateVariable(paintableId, VAR_TEXT, data, true);
+	            	dataBeforeEdit = data; 
 				}
 			}
 			
