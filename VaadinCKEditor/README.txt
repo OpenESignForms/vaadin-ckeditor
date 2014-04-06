@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 2 February 2014
+Last updated: 6 April 2014
 
   USING CKEDITOR FOR VAADIN IN YOUR APPLICATION
   =============================================
@@ -58,6 +58,10 @@ under the Creative Commons Attribution 3.0 License.
   
   CHANGELOG
   =========
+
+7.9.1 (6 April 2014)
+- Upgraded to CKEditor 4.3.4.
+- Upgraded to Vaadin 7.1.13.
 
 7.9.0 (2 February 2014)
 - Added 'addKeystrokeMapping' to set keystroke handlers via CKEditorConfig: config.addKeystrokeMapping(int keystroke,String command)

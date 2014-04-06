@@ -319,7 +319,7 @@ public class VaadinCKEditorUI extends UI {
 	}
 	
 	public String getVersion() {
-		return "7.9.0";
+		return "7.9.1";
 	}
 
 }
