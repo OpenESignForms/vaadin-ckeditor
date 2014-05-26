@@ -49,7 +49,8 @@ public class VaadinCKEditorUI extends UI {
 		mainView.addComponent(separator); 
 
 
-		/* This is the full list as we know it in CKEditor 4.x
+		/* See http://ckeditor.com/latest/samples/plugins/toolbar/toolbar.html for the official info.
+		 * This is the full list as we know it in CKEditor 4.x
 	[
     { name: 'document', items : [ 'Source','-','NewPage','Preview','Print','-','Templates' ] },
 	{ name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
