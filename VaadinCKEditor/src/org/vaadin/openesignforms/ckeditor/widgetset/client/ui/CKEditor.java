@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2012 Yozons, Inc.
+// Copyright (C) 2010-2014 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -51,6 +51,11 @@ public class CKEditor extends JavaScriptObject {
 		this.dataProcessor.writer.setRules(tagName, rule);
 	}-*/;
 	
+	public final native void setKeystroke(int keystroke, String command)
+	/*-{
+		this.setKeystroke(keystroke, command);
+	}-*/;
+	
 	public final native void pushProtectedSource(String regexString)
 	/*-{
 	    var regex = @org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService::convertJavaScriptStringToObject(Ljava/lang/String;)(regexString);
@@ -78,25 +83,15 @@ public class CKEditor extends JavaScriptObject {
     	}, null, listener);
     	
     	// hook into the change events for ckEditor
-		this.on('saveSnapshot', function(ev) { 
+		this.on('change', function(ev) { 
 			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onChange()(); 
 		}, null, listener);
+
 		this.on('mode', function(ev) { 
 			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onModeChange(Ljava/lang/String;)(ev.editor.mode); 
 		}, null, listener);
 		this.on('dataReady', function(ev) { 
 			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onDataReady()(); 
-		}, null, listener);
-		this.getCommand('undo').on( 'afterUndo', function(ev) { 
-			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onChange()(); 
-		}, null, listener);
-		this.getCommand('redo').on( 'afterRedo', function(ev) { 
-			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onChange()(); 
-		}, null, listener);
-		this.on('afterCommandExec', function( ev ) { 
-			if ( ev.data.command.canUndo !== false ) { 
-				ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onChange()(); 
-			} 
 		}, null, listener);
 
 	}-*/;
