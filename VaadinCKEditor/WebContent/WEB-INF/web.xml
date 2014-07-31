@@ -46,7 +46,7 @@
   	</init-param>
   	<init-param>
     	<param-name>pushmode</param-name>
-    	<param-value>disabled</param-value> <!-- Not currently using PUSH specifically in OpenESF -->
+    	<param-value>disabled</param-value> <!-- Not currently using PUSH specifically in CKEditor for Vaadin -->
  	</init-param>
 	<async-supported>true</async-supported> <!-- Enable if using PUSH -->
   </servlet>
