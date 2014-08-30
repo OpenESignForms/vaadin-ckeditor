@@ -1,33 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  version="3.0">
+
   <display-name>VaadinCKEditor</display-name>
   
+  <!-- Set to true when in production -->
   <context-param>
   	<description>Vaadin production mode</description>
   	<param-name>productionMode</param-name>
   	<param-value>false</param-value>
   </context-param>
   
+  <!-- Set to true when testing with JMeter or the like -->
+  <context-param>
+    <param-name>disable-xsrf-protection</param-name>
+    <param-value>false</param-value>
+  </context-param>
+   
+  <!-- Time in seconds for the client side heartbeats to detect dead UIs when a browser is closed or navigates away. Default: 300 -->
+  <context-param>
+    <param-name>heartbeatInterval</param-name>
+    <param-value>300</param-value>
+  </context-param>
+
   <servlet>
-  	<servlet-name>VaadinCKEditorApplication</servlet-name>
-  	<servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
+  	<servlet-name>CKEditorDemoVaadinApplication</servlet-name>
+  	<servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
   	<init-param>
-  		<description>Vaadin application class to start</description>
-  		<param-name>application</param-name>
-  		<param-value>org.vaadin.openesignforms.ckeditor.VaadinCKEditorApplication</param-value>
+  		<description>Vaadin UI class to use</description>
+  		<param-name>UI</param-name>
+  		<param-value>org.vaadin.openesignforms.ckeditor.VaadinCKEditorUI</param-value>
   	</init-param>
   	<init-param>
   		<description>Application widgetset</description>
   		<param-name>widgetset</param-name>
   		<param-value>org.vaadin.openesignforms.ckeditor.widgetset.VaadinCKEditorWidgetset</param-value>
   	</init-param>
+  	<init-param>
+  		<description>Want idle sessions to expire, after 3 missed heartbeats, since heartbeat will otherwise keep alive as long as the browser is open</description>
+  		<param-name>closeIdleSessions</param-name>
+  		<param-value>true</param-value>
+  	</init-param>
+  	<init-param>
+    	<param-name>pushmode</param-name>
+    	<param-value>disabled</param-value> <!-- Not currently using PUSH specifically in CKEditor for Vaadin -->
+ 	</init-param>
+	<async-supported>true</async-supported> <!-- Enable if using PUSH -->
   </servlet>
 
   <servlet-mapping>
-  	<servlet-name>VaadinCKEditorApplication</servlet-name>
+  	<servlet-name>CKEditorDemoVaadinApplication</servlet-name>
   	<url-pattern>/*</url-pattern>
   </servlet-mapping>
   
+  <!--  Session config -->
+  <session-config>
+    <session-timeout>15</session-timeout>
+    <cookie-config>
+  	  <http-only>true</http-only>
+    </cookie-config>
+  </session-config>
+
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.htm</welcome-file>

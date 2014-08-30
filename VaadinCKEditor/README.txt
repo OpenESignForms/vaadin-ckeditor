@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 23 April 2013
+Last updated: 29 August 2014
 
   USING CKEDITOR FOR VAADIN IN YOUR APPLICATION
   =============================================
@@ -34,7 +34,7 @@ This software component is licensed under Apache License 2.0.
 See http://www.apache.org/licenses/LICENSE-2.0.html for more details.
 
 This component was written initially by Yozons, Inc. (www.yozons.com) 
-for its Open eSignForms project (open.esignforms.com) -- not required to use this component -- 
+for its Open eSignForms project (http://open.esignforms.com) -- not required to use this component -- 
 which is separately licensed under the Affero GPL as well as a commercial licensed.
 
 The code framework was initially jump-started using the Vaadin incubator
@@ -50,16 +50,71 @@ under the Creative Commons Attribution 3.0 License.
 
   TODO
   ====
-  * Port to Vaadin 7.
+  * Take advantage of Vaadin 7 features for add-on widgets.
 
   KNOWN ISSUES
   ============
-  * Need a better mechanism than the blur event to detect editor changes.
-    Apparently, CKEditor will support an official onchange event in the 4.2 release (http://dev.ckeditor.com/ticket/9794) 
-    that we hope will resolve this.
+  See: https://code.google.com/p/vaadin-ckeditor/issues/list
   
   CHANGELOG
   =========
+
+7.9.3 (29 August 2014)
+- Upgraded to CKEditor 4.4.4.
+- Upgraded to Vaadin 7.2.6.
+
+7.9.2 (30 July 2014)
+- Upgraded to CKEditor 4.4.3.
+- Upgraded to Vaadin 7.2.5.
+
+7.9.1 (6 April 2014)
+- Upgraded to CKEditor 4.3.4.
+- Upgraded to Vaadin 7.1.13.
+
+7.9.0 (2 February 2014)
+- Added 'addKeystrokeMapping' to set keystroke handlers via CKEditorConfig: config.addKeystrokeMapping(int keystroke,String command)
+- Added 'enableCtrlSWithVaadinSavePlugin' to CKEditorConfig to allow CTRL-S to also save via the 'vaadinsave' plugin. Note that this
+  will automatically enable the vaadinsave plugin (config.enableVaadinSavePlugin()) as it's required for the keystroke mapping to take place.
+- Changed the 'vaadinsave' plugin to work in both WYSIWYG and SOURCE modes.
+- Added CKEditorTextField.addVaadinSaveListener() method to be notified when the vaadinsave button is pressed. Previously, this was
+  only noted by a ValueChangeListener(), though that could be called if you changed the editor and then clicked 
+  to remove focus from the editor. The callback listener allows you to know that it was the vaadinsave button or CTRL-S.
+
+7.8.9 (31 January 2014)
+- Upgraded to CKEditor 4.3.2.
+- Upgraded to Vaadin 7.1.10.
+
+7.8.8 (25 November 2013)
+- Upgraded to CKEditor 4.3.
+- Upgraded to Vaadin 7.1.8.
+
+7.8.7 (17 October 2013)
+- Upgraded to CKEditor 4.2.2.
+- Upgraded to Vaadin 7.1.7.
+
+7.8.6 (3 September 2013)
+- Added 'readOnly' setting for startup read-only mode: config.setReadOnly(true).
+- Fixed bug in change events so as not to lose any changes due to a conflict between the CKEditor's built-in
+  'change' event and our continued to need to also use the 'blur' event to detect changes, especially
+  for SOURCE mode as 'change' works great for WYSIWYG mode.
+- Upgraded to Vaadin 7.1.3.
+
+7.8.5 (29 July 2013)
+- Added ElementResizeListener to VCKEditorTextField widget so react to browser resizing.
+
+7.8.4 (23 July 2013)
+- Upgraded to CKEditor 4.2. Using the new "change" event, which the documentation points out could fire
+  even when no changes are done, so comparisons are still needed.
+- Upgraded to Vaadin 7.1.1.
+
+7.8.3 (10 May 2013)
+- Fixed the modal window issue.
+
+7.8.2 (8 May 2013)
+- Basic legacy port from Vaadin 6.8.10 to 7.0.5. Special thanks to Samuli Penttilä for submitting a conversion patch that was based on an older 1.6 release
+  but could still be applied to the 1.8.2 release we did the conversion on.
+- Note that this is considered experimental as it's built on the legacy conversion and has not been tested in production Vaadin 7 environments.
+- Note that the modal window bug has returned with this port, so you are recommended not to place a CKEditorTextField in a modal Vaadin Window.
 
 1.8.2 (23 April 2013)
 - Upgraded to CKEditor 4.1.1. This patch allows previous pasteFromWord* settings to work.
