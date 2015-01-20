@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2014 Yozons, Inc.
+// Copyright (C) 2010-2015 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -154,16 +154,6 @@ public class CKEditorTextField extends AbstractField<String>
         	version = (String)variables.get(VCKEditorTextField.VAR_VERSION);
         }
         
-        if (variables.containsKey(FocusEvent.EVENT_ID)) {
-			//System.out.println("------------------------------");
-    		//System.out.println("*** TRACE FROM CLIENT changeVariables() - FOCUS - " + System.currentTimeMillis());
-            fireEvent(new FocusEvent(this));
-        }
-        if (variables.containsKey(BlurEvent.EVENT_ID)) {
-    		//System.out.println("*** TRACE FROM CLIENT changeVariables() - BLUR - " + System.currentTimeMillis());
-            fireEvent(new BlurEvent(this));
-        }
-
         // Sets the text
         if (variables.containsKey(VCKEditorTextField.VAR_TEXT) && ! isReadOnly()) {
             // Only do the setting if the string representation of the value has been updated
@@ -178,6 +168,16 @@ public class CKEditorTextField extends AbstractField<String>
             }
         }
         
+        if (variables.containsKey(FocusEvent.EVENT_ID)) {
+			//System.out.println("------------------------------");
+    		//System.out.println("*** TRACE FROM CLIENT changeVariables() - FOCUS - " + System.currentTimeMillis());
+            fireEvent(new FocusEvent(this));
+        }
+        if (variables.containsKey(BlurEvent.EVENT_ID)) {
+    		//System.out.println("*** TRACE FROM CLIENT changeVariables() - BLUR - " + System.currentTimeMillis());
+            fireEvent(new BlurEvent(this));
+        }
+
         // See if the vaadinsave button was pressed
         if (variables.containsKey(VCKEditorTextField.VAR_VAADIN_SAVE_BUTTON_PRESSED) && ! isReadOnly()) {
         	notifyVaadinSaveListeners();

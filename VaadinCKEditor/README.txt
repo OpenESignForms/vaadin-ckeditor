@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 2 December 2014
+Last updated: 20 January 2015
 
   USING CKEDITOR FOR VAADIN IN YOUR APPLICATION
   =============================================
@@ -59,6 +59,10 @@ under the Creative Commons Attribution 3.0 License.
   CHANGELOG
   =========
 
+7.9.5 (20 January 2015)
+- Fixed issue 41 (https://code.google.com/p/vaadin-ckeditor/issues/detail?id=41) for setting the editor text contents before firing blur/focus events.  
+  Thanks to kdokdo for providing the bug find and fix.
+
 7.9.4 (2 December 2014)
 - Upgraded to CKEditor 4.4.6.
 - Upgraded to Vaadin 7.3.5.
@@ -115,7 +119,7 @@ under the Creative Commons Attribution 3.0 License.
 - Fixed the modal window issue.
 
 7.8.2 (8 May 2013)
-- Basic legacy port from Vaadin 6.8.10 to 7.0.5. Special thanks to Samuli Penttilä for submitting a conversion patch that was based on an older 1.6 release
+- Basic legacy port from Vaadin 6.8.10 to 7.0.5. Special thanks to Samuli Penttilï¿½ for submitting a conversion patch that was based on an older 1.6 release
   but could still be applied to the 1.8.2 release we did the conversion on.
 - Note that this is considered experimental as it's built on the legacy conversion and has not been tested in production Vaadin 7 environments.
 - Note that the modal window bug has returned with this port, so you are recommended not to place a CKEditorTextField in a modal Vaadin Window.
@@ -231,7 +235,7 @@ under the Creative Commons Attribution 3.0 License.
 
 1.6.0 (8 December 2011)
  - Updated the sample application to show the 100% height fixed by Stefan.
- *** All of the following feature upgrades in this release were contributed by Stefan Meißner, davengo GmbH (Thanks again!) ***
+ *** All of the following feature upgrades in this release were contributed by Stefan Meiï¿½ner, davengo GmbH (Thanks again!) ***
  - Correct sizing of the component using component.setWidth(..., ...) and component.setHeight(..., ...). 
    Vaadin layouts do all the calculations of 100% height and widths and so on and give you the correct sizes.
  - Adds the width and the height to the inPage configuration, if it is not set yet so the component is rendered 
@@ -246,7 +250,7 @@ under the Creative Commons Attribution 3.0 License.
 1.5.0 (1 December 2011)
  - Upgraded to Vaadin 6.7.2.
  - Removed Config.setStylesCombo_stylesSet() method as it was previously deprecated. Use Config.setStylesSet() instead.
- *** All of the following feature upgrades in this release were contributed by Stefan Meißner, davengo GmbH (Thanks!) ***
+ *** All of the following feature upgrades in this release were contributed by Stefan Meiï¿½ner, davengo GmbH (Thanks!) ***
  - Focus and TabIndex (implementing Focusable)
  - CKEditorField.insertHtml (insert html at the current selection)
  - CKEditorField.insertText (insert text at the current selection)
@@ -273,7 +277,7 @@ under the Creative Commons Attribution 3.0 License.
 1.4 (14 June 2011)
  - Changed CKEditorConfig setStylesCombo_stylesSet() to use name setStylesSet() as this was changed back in CKEditor 3.3 apparently. 
    The old name is deprecated and will be removed shortly.
- - Added config options from André (google code user zorknika)
+ - Added config options from Andrï¿½ (google code user zorknika)
    config.setSkin(String newSkin)
    config.setFilebrowserFlashBrowseLinkUrl(String url)
    config.setFilebrowserImageBrowseLinkUrl(String url)
