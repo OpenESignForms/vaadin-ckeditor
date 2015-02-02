@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>CKEditor test</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script type="text/javascript" src="http://nightly.ckeditor.com/13-09-03-13-05/full/ckeditor.js"></script>
+</head>
+<body>
+
+<div style="width: 100%">
+    <div id="editor1"></div>
+    <script type="text/javascript">
+    
+    	CKEDITOR.config.readOnly = true;
+    	var editor = CKEDITOR.appendTo('editor1');
+        editor.on('instanceReady', function(evt){
+        	//editor.setReadOnly(true);
+        	editor.setData("<p>Here is my first editor line.</p>");
+        });
+	</script>
+</div>
+
+<p><input type="submit" name="submit" value="submit" /></p>
+
+</body>
+</html>

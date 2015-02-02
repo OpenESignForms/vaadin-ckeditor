@@ -1,5 +1,5 @@
 /*
-// Copyright (C) 2010-2012 Yozons, Inc.
+// Copyright (C) 2010-2014 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // Adapted from CKEditor 3.2 file _source/plugins/save/plugin.js on 7 March 2010.
@@ -19,6 +19,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 {
 	var vaadinSaveCmd =
 	{
+		modes: { wysiwyg: 1, source: 1 },
 		exec : function( editor )
 		{
 			// alert("Data: " + editor.getData());
