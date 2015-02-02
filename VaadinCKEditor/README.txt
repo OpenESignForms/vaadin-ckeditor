@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 20 January 2015
+Last updated: 2 February 2015
 
   USING CKEDITOR FOR VAADIN IN YOUR APPLICATION
   =============================================
@@ -58,6 +58,10 @@ under the Creative Commons Attribution 3.0 License.
   
   CHANGELOG
   =========
+
+7.9.6 (2 February 2015)
+- Upgraded to CKEditor 4.4.7.
+- Upgraded to Vaadin 7.3.9.
 
 7.9.5 (20 January 2015)
 - Fixed issue 41 (https://code.google.com/p/vaadin-ckeditor/issues/detail?id=41) for setting the editor text contents before firing blur/focus events.  
