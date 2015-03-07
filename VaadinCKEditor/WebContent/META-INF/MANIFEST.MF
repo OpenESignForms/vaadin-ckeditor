@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Vaadin-License-Title: Apache 2.0
-Implementation-Vendor: Yozons Inc.
 Implementation-Title: CKEditor wrapper for Vaadin
-Implementation-Version: 1.8.2
-Vaadin-Package-Version: 1
-Class-Path: 
+Implementation-Version: 7.9.6
 Vaadin-Widgetsets: org.vaadin.openesignforms.ckeditor.widgetset.Vaadin
  CKEditorWidgetset
+Vaadin-Package-Version: 1
+Class-Path: 
+Implementation-Vendor: Yozons Inc.
 

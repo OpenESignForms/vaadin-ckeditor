@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2013 Yozons, Inc.
+// Copyright (C) 2010-2015 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -8,30 +8,32 @@
 //
 package org.vaadin.openesignforms.ckeditor;
 
+import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
 import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField;
 
 import com.vaadin.data.Property;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
 import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
-import com.vaadin.terminal.PaintException;
-import com.vaadin.terminal.PaintTarget;
+import com.vaadin.server.PaintException;
+import com.vaadin.server.PaintTarget;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.LegacyComponent;
 
 /**
  * Server side component for the VCKEditorTextField widget.  
  */
-@com.vaadin.ui.ClientWidget(VCKEditorTextField.class)
-public class CKEditorTextField extends AbstractField 
-	implements FieldEvents.BlurNotifier, FieldEvents.FocusNotifier, Component.Focusable  {
-	
-	private static final long serialVersionUID = -37444047694136727L;
+public class CKEditorTextField extends AbstractField<String> 
+	implements FieldEvents.BlurNotifier, FieldEvents.FocusNotifier, Component.Focusable, LegacyComponent  {
+	private static final long serialVersionUID = 8368712158261928619L;
 
 	private CKEditorConfig config;
 	private String version = "unknown";
@@ -40,11 +42,12 @@ public class CKEditorTextField extends AbstractField
 	private boolean protectedBody = false;
 	private boolean viewWithoutEditor = false;
 	private boolean focusRequested = false;
+	protected LinkedList<VaadinSaveListener> vaadinSaveListenerList;
 
 	public CKEditorTextField() {
 		super.setValue("");
-		setWidth(100,UNITS_PERCENTAGE);
-		setHeight(300,UNITS_PIXELS);
+		setWidth("100%");
+		setHeight("300px");
 	}
 	
 	public CKEditorTextField(CKEditorConfig config) {
@@ -52,8 +55,16 @@ public class CKEditorTextField extends AbstractField
 		setConfig(config);
 	}
 	
+	public CKEditorTextField(CKEditorConfig config, String initialValue) {
+		this();
+		setValue(initialValue);
+		setConfig(config);
+	}
+	
 	public void setConfig(CKEditorConfig config) {
 		this.config = config;
+		if ( config.isReadOnly() )
+			setReadOnly(true);
 	}
 	
 	public String getVersion() {
@@ -61,16 +72,16 @@ public class CKEditorTextField extends AbstractField
 	}
 	
 	@Override
-    public void setValue(Object newValue) throws Property.ReadOnlyException, Property.ConversionException {
+    public void setValue(String newValue) throws Property.ReadOnlyException, Converter.ConversionException {
     	if ( newValue == null )
     		newValue = "";
-    	super.setValue(newValue.toString(), false);
+    	super.setValue(newValue, false);
     	requestRepaint();
     }
 	
 	@Override
 	public void paintContent(PaintTarget target) throws PaintException {
-		super.paintContent(target);
+		//super.paintContent(target);
 		
 		Object currValueObject = getValue();
 		String currValue = currValueObject == null ? "" : currValueObject.toString();
@@ -95,6 +106,16 @@ public class CKEditorTextField extends AbstractField
 			
 			if ( config.hasWriterIndentationChars() ) {
 				target.addAttribute(VCKEditorTextField.ATTR_WRITER_INDENTATIONCHARS, config.getWriterIndentationChars());
+			}
+			
+			if ( config.hasKeystrokeMappings() ) {
+				int i = 0;
+				Set<Integer> keystrokeSet = config.getKeystrokes();
+				for( Integer keystroke : keystrokeSet ) {
+					target.addAttribute(VCKEditorTextField.ATTR_KEYSTROKES_KEYSTROKE+i, keystroke);
+					target.addAttribute(VCKEditorTextField.ATTR_KEYSTROKES_COMMAND+i, config.getKeystrokeCommandByKeystroke(keystroke));
+					++i;
+				}
 			}
 			
 			if ( config.hasProtectedSource() ) {
@@ -126,23 +147,13 @@ public class CKEditorTextField extends AbstractField
 	
     @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
-        super.changeVariables(source, variables);
+        //super.changeVariables(source, variables);
 
         // Sets the CKEditor version
         if (variables.containsKey(VCKEditorTextField.VAR_VERSION)) {
         	version = (String)variables.get(VCKEditorTextField.VAR_VERSION);
         }
         
-        if (variables.containsKey(FocusEvent.EVENT_ID)) {
-			//System.out.println("------------------------------");
-    		//System.out.println("*** TRACE FROM CLIENT changeVariables() - FOCUS - " + System.currentTimeMillis());
-            fireEvent(new FocusEvent(this));
-        }
-        if (variables.containsKey(BlurEvent.EVENT_ID)) {
-    		//System.out.println("*** TRACE FROM CLIENT changeVariables() - BLUR - " + System.currentTimeMillis());
-            fireEvent(new BlurEvent(this));
-        }
-
         // Sets the text
         if (variables.containsKey(VCKEditorTextField.VAR_TEXT) && ! isReadOnly()) {
             // Only do the setting if the string representation of the value has been updated
@@ -156,40 +167,65 @@ public class CKEditorTextField extends AbstractField
                 setValue(newValue, true);
             }
         }
+        
+        if (variables.containsKey(FocusEvent.EVENT_ID)) {
+			//System.out.println("------------------------------");
+    		//System.out.println("*** TRACE FROM CLIENT changeVariables() - FOCUS - " + System.currentTimeMillis());
+            fireEvent(new FocusEvent(this));
+        }
+        if (variables.containsKey(BlurEvent.EVENT_ID)) {
+    		//System.out.println("*** TRACE FROM CLIENT changeVariables() - BLUR - " + System.currentTimeMillis());
+            fireEvent(new BlurEvent(this));
+        }
+
+        // See if the vaadinsave button was pressed
+        if (variables.containsKey(VCKEditorTextField.VAR_VAADIN_SAVE_BUTTON_PRESSED) && ! isReadOnly()) {
+        	notifyVaadinSaveListeners();
+        }
     }
 
 
 	@Override
-	public Class<?> getType() {
+	public Class<String> getType() {
 		return String.class;
 	}
 	
 	@Override
 	public void addListener(BlurListener listener) {
-        addListener(BlurEvent.EVENT_ID, BlurEvent.class, listener,
-                BlurListener.blurMethod);
+        addListener(BlurEvent.EVENT_ID, BlurEvent.class, listener, BlurListener.blurMethod);
 	}
-
+	@Override
+	public void addBlurListener(BlurListener listener) {
+		addListener(BlurEvent.EVENT_ID, BlurEvent.class, listener, BlurListener.blurMethod);
+	}
+	
 	@Override
 	public void removeListener(BlurListener listener) {
         removeListener(BlurEvent.EVENT_ID, BlurEvent.class, listener);
 	}
-
+	@Override
+	public void removeBlurListener(BlurListener listener) {
+		removeListener(BlurEvent.EVENT_ID, BlurEvent.class, listener);
+	}
+	
 	@Override
 	public void addListener(FocusListener listener) {
-        addListener(FocusEvent.EVENT_ID, FocusEvent.class, listener,
-                FocusListener.focusMethod);
+        addListener(FocusEvent.EVENT_ID, FocusEvent.class, listener, FocusListener.focusMethod);
+	}
+	@Override
+	public void addFocusListener(FocusListener listener) {
+		addListener(FocusEvent.EVENT_ID, FocusEvent.class, listener, FocusListener.focusMethod);
 	}
 
 	@Override
 	public void removeListener(FocusListener listener) {
         removeListener(FocusEvent.EVENT_ID, FocusEvent.class, listener);
 	}
-	
 	@Override
-    public void setHeight(float height, int unit) {
-		super.setHeight(height,unit);
+	public void removeFocusListener(FocusListener listener) {
+		removeListener(FocusEvent.EVENT_ID, FocusEvent.class, listener);
 	}
+	
 	@Override
     public void setHeight(String height) {
 		super.setHeight(height);
@@ -239,5 +275,31 @@ public class CKEditorTextField extends AbstractField
 
 	public boolean isProtectedBody() {
 		return protectedBody;
+	}
+	
+	
+	public synchronized void addVaadinSaveListener(VaadinSaveListener listener) {
+		if ( vaadinSaveListenerList == null )
+			vaadinSaveListenerList = new LinkedList<VaadinSaveListener>();
+		vaadinSaveListenerList.add(listener);
+	}
+	public synchronized void removeVaadinSaveListener(VaadinSaveListener listener) {
+		if ( vaadinSaveListenerList != null )
+			vaadinSaveListenerList.remove(listener);
+	}
+	synchronized void notifyVaadinSaveListeners() {
+		if ( vaadinSaveListenerList != null ) {
+			for( VaadinSaveListener listener : vaadinSaveListenerList )
+				listener.vaadinSave(this);
+		}
+	}
+	
+	public interface VaadinSaveListener extends Serializable {
+		/**
+	     * Notifies this listener that the vaadinsave button in the editor was pressed.
+	     * 
+	     * @param editor the CKEditorTextField that was saved
+	     */
+	    public void vaadinSave(CKEditorTextField editor);
 	}
 }
