@@ -1,6 +1,9 @@
 File: VaadinCKEditor/README.txt
 Last updated: 2 February 2015
 
+3/26/2015 - Migrated from Google Code (https://code.google.com/p/vaadin-ckeditor/) to GitHub (https://github.com/OpenESignForms/vaadin-ckeditor).
+
+
   USING CKEDITOR FOR VAADIN IN YOUR APPLICATION
   =============================================
 
