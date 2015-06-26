@@ -7,6 +7,9 @@
 //
 package org.vaadin.openesignforms.ckeditor;
 
+import org.vaadin.openesignforms.ckeditor.CKEditorTextField.SelectionChangeEvent;
+import org.vaadin.openesignforms.ckeditor.CKEditorTextField.SelectionChangeListener;
+
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.UI;
@@ -17,6 +20,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -88,9 +92,18 @@ public class VaadinCKEditorUI extends UI {
 
 			public void valueChange(ValueChangeEvent event) {
 				Notification.show("CKEditor v" + ckEditorTextField1.getVersion() + "/" + getVersion() + " - #1 contents: " + event.getProperty().getValue().toString());
+			}
+		});
+		/* 6/26/2015 - Checking in code, so commenting this out as it's not really working reliably yet.
+		ckEditorTextField1.addSelectionChangeListener(new SelectionChangeListener() {
+			private static final long serialVersionUID = 1270295222444271706L;
+
+			public void selectionChange(SelectionChangeEvent event) {
+				Notification.show("CKEditor selected HTML: " + event.getSelectedHtml(), Type.ERROR_MESSAGE);
 				ckEditorTextField1.focus();
 			}
 		});
+		*/
 		
 		Button resetTextButton1 = new Button("Reset editor #1");
 		resetTextButton1.addClickListener( new Button.ClickListener() {			
@@ -320,7 +333,7 @@ public class VaadinCKEditorUI extends UI {
 	}
 	
 	public String getVersion() {
-		return "7.9.6";
+		return "7.10.0_pre0626";
 	}
 
 }

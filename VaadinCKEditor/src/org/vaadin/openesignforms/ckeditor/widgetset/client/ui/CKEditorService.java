@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2013 Yozons, Inc.
+// Copyright (C) 2010-2015 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -135,7 +135,6 @@ public class CKEditorService {
 		$wnd.CKEDITOR.addStylesSet(name,styles);
 	}-*/;
 	
-	
 	// TODO: Never tested yet
 	public native static void addTemplates(String name, String jsDefinition)
 	/*-{
@@ -160,6 +159,7 @@ public class CKEditorService {
 	public interface CKEditorListener {
 		public void onInstanceReady();
 		public void onChange();
+		public void onSelectionChange();
 		public void onModeChange(String mode);
 		public void onDataReady();
 		public void onBlur();

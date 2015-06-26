@@ -9,6 +9,7 @@
 package org.vaadin.openesignforms.ckeditor;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
@@ -17,6 +18,8 @@ import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter;
+import com.vaadin.event.ConnectorEventListener;
+import com.vaadin.event.EventRouter;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
@@ -24,16 +27,18 @@ import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.server.PaintException;
 import com.vaadin.server.PaintTarget;
+import com.vaadin.shared.EventId;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.LegacyComponent;
+import com.vaadin.util.ReflectTools;
 
 /**
  * Server side component for the VCKEditorTextField widget.  
  */
 public class CKEditorTextField extends AbstractField<String> 
 	implements FieldEvents.BlurNotifier, FieldEvents.FocusNotifier, Component.Focusable, LegacyComponent  {
-	private static final long serialVersionUID = 8368712158261928619L;
+	private static final long serialVersionUID = 7258228217453800663L;
 
 	private CKEditorConfig config;
 	private String version = "unknown";
@@ -177,6 +182,17 @@ public class CKEditorTextField extends AbstractField<String>
     		//System.out.println("*** TRACE FROM CLIENT changeVariables() - BLUR - " + System.currentTimeMillis());
             fireEvent(new BlurEvent(this));
         }
+        
+        if (variables.containsKey(SelectionChangeEvent.EVENT_ID)) {
+    		//System.out.println("*** TRACE FROM CLIENT changeVariables() - selectionChange - " + System.currentTimeMillis());
+        	Object selectedHtmlObject = variables.get(SelectionChangeEvent.EVENT_ID);
+            if ( selectedHtmlObject != null ) {
+            	String selectedHtml = selectedHtmlObject.toString();
+            	if ( selectedHtml != null && ! "".equals(selectedHtml) ) {
+                	fireEvent(new SelectionChangeEvent(this,selectedHtml));
+            	}
+            }
+        }
 
         // See if the vaadinsave button was pressed
         if (variables.containsKey(VCKEditorTextField.VAR_VAADIN_SAVE_BUTTON_PRESSED) && ! isReadOnly()) {
@@ -224,6 +240,17 @@ public class CKEditorTextField extends AbstractField<String>
 	@Override
 	public void removeFocusListener(FocusListener listener) {
 		removeListener(FocusEvent.EVENT_ID, FocusEvent.class, listener);
+	}
+	
+	/**
+	 * @deprecated This is a new method that is not yet working reliably.
+	 * @param listener
+	 */
+	public void addSelectionChangeListener(SelectionChangeListener listener) {
+		addListener(SelectionChangeEvent.EVENT_ID, SelectionChangeEvent.class, listener, SelectionChangeListener.selectionChangeMethod);
+	}
+	public void removeSelectionChangeListener(SelectionChangeListener listener) {
+		removeListener(SelectionChangeEvent.EVENT_ID, SelectionChangeEvent.class, listener);
 	}
 	
 	@Override
@@ -302,4 +329,29 @@ public class CKEditorTextField extends AbstractField<String>
 	     */
 	    public void vaadinSave(CKEditorTextField editor);
 	}
+	
+	
+    @SuppressWarnings("serial")
+    public static class SelectionChangeEvent extends Component.Event {
+        public static final String EVENT_ID = VCKEditorTextField.EVENT_SELECTION_CHANGE;
+
+        private String selectedHtml;
+        
+        public SelectionChangeEvent(Component source, String selectedHtml) {
+            super(source);
+            this.selectedHtml = selectedHtml;
+        }
+        
+        public String getSelectedHtml() {
+        	return selectedHtml;
+        }
+    }
+
+    public interface SelectionChangeListener extends ConnectorEventListener {
+        public static final Method selectionChangeMethod = ReflectTools.findMethod(
+                SelectionChangeListener.class, "selectionChange", SelectionChangeEvent.class);
+        
+        public void selectionChange(SelectionChangeEvent event);
+    }
+
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2014 Yozons, Inc.
+// Copyright (C) 2010-2015 Yozons, Inc.
 // CKEditor for Vaadin- Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -55,6 +55,8 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	public static final String VAR_VAADIN_SAVE_BUTTON_PRESSED = "vaadinsave";
 	public static final String VAR_VERSION = "version";
 	
+	public static final String EVENT_SELECTION_CHANGE = "selectionChange";
+	
 	private static String ckeditorVersion;
 
 	/** The client side widget identifier */
@@ -67,7 +69,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	
 	private boolean immediate;
 	private boolean readOnly;
-	private boolean viewWithoutEditor; // 11/19/2012 - New mode to simulate original readOnly before CKEditor had support for being a read-only editor. Set to true and the editor will not be displayed, just the contents.
+	private boolean viewWithoutEditor; // Set to true and the editor will not be displayed, just the contents.
 	private boolean protectedBody;
 	
 	private CKEditor ckEditor = null;
@@ -248,11 +250,6 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			
 			// editor data and some options are set when the instance is ready....
 		} else if ( ckEditorIsReady ) {
-			
-			if ( readOnlyModeChanged ) {
-				ckEditor.setReadOnly(readOnly);
-			}
-			
 			if ( needsDataUpdate ) {
 				ckEditor.setData(dataBeforeEdit);
 			}
@@ -272,6 +269,10 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			if ( uidl.hasAttribute(ATTR_FOCUS) ) {
 				setFocus(uidl.getBooleanAttribute(ATTR_FOCUS));
 			}
+			
+			if ( readOnlyModeChanged ) {
+				ckEditor.setReadOnly(readOnly);
+			}			
 		}
 		
 	}
@@ -367,7 +368,6 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 		}
 				
 		ckEditorIsReady = true;
-		ckEditor.setReadOnly(readOnly);
 		
 		if (setFocusAfterReady) {
 			setFocus(true);
@@ -382,10 +382,64 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 		if (protectedBody) {
 			ckEditor.protectBody(protectedBody);
 		}
+
+		ckEditor.setReadOnly(readOnly);
+		
 		ckeditorVersion = CKEditorService.version();
 		clientToServer.updateVariable(paintableId, VAR_VERSION, ckeditorVersion, true);
 	}
 	
+	// Listener callback
+	@Override
+	public void onChange() {
+		if ( ckEditor != null && ! readOnly ) {
+			String data = ckEditor.getData();
+			if ( ! data.equals(dataBeforeEdit) ) {
+				clientToServer.updateVariable(paintableId, VAR_TEXT, data, immediate);
+            	dataBeforeEdit = data;
+			}
+		}
+	}
+	
+	// Listener callback
+	@Override
+	public void onModeChange(String mode) {
+		if ( ckEditor != null ) {
+			if ( ! readOnly ) {
+				String data = ckEditor.getData();
+				if ( ! data.equals(dataBeforeEdit) ) {
+					clientToServer.updateVariable(paintableId, VAR_TEXT, data, true);
+	            	dataBeforeEdit = data; 
+				}
+			}
+			
+			if ("wysiwyg".equals(mode)) {
+				ckEditor.protectBody(protectedBody);
+			}
+		}
+	}
+	
+	// Listener callback
+	@Override
+	public void onSelectionChange() {
+		if ( ckEditorIsReady ) {
+			if ( clientToServer.hasEventListeners(this, EVENT_SELECTION_CHANGE) ) {
+				String html = ckEditor.getSelectedHtml();
+				if ( html != null && ! "".equals(html) ) {
+		            clientToServer.updateVariable(paintableId, EVENT_SELECTION_CHANGE, html, true);
+				}
+			}
+		}
+	}
+
+	// Listener callback
+	@Override
+	public void onDataReady() {
+		if ( ckEditor != null ) {
+			ckEditor.protectBody(protectedBody);
+		}
+	}
+
 	@Override
 	public void setWidth(String width) {
 		super.setWidth(width);
@@ -416,41 +470,6 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			ckEditor = null;
 		}
 		ckEditorIsReady = false;
-	}
-
-	@Override
-	public void onChange() {
-		if ( ckEditor != null && ! readOnly ) {
-			String data = ckEditor.getData();
-			if ( ! data.equals(dataBeforeEdit) ) {
-				clientToServer.updateVariable(paintableId, VAR_TEXT, data, immediate);
-            	dataBeforeEdit = data;
-			}
-		}
-	}
-	
-	@Override
-	public void onModeChange(String mode) {
-		if ( ckEditor != null ) {
-			if ( ! readOnly ) {
-				String data = ckEditor.getData();
-				if ( ! data.equals(dataBeforeEdit) ) {
-					clientToServer.updateVariable(paintableId, VAR_TEXT, data, true);
-	            	dataBeforeEdit = data; 
-				}
-			}
-			
-			if ("wysiwyg".equals(mode)) {
-				ckEditor.protectBody(protectedBody);
-			}
-		}
-	}
-	
-	@Override
-	public void onDataReady() {
-		if ( ckEditor != null ) {
-			ckEditor.protectBody(protectedBody);
-		}
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2014 Yozons, Inc.
+// Copyright (C) 2010-2015 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -87,6 +87,10 @@ public class CKEditor extends JavaScriptObject {
 			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onChange()(); 
 		}, null, listener);
 
+		this.on('selectionChange', function(ev) { 
+			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onSelectionChange()(); 
+		}, null, listener);
+
 		this.on('mode', function(ev) { 
 			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onModeChange(Ljava/lang/String;)(ev.editor.mode); 
 		}, null, listener);
@@ -159,4 +163,29 @@ public class CKEditor extends JavaScriptObject {
 	 		}
 	 	}
 	}-*/;
+
+	// Adapted code provided on 6/23/2015 by ado2000 at github
+	public final native String getSelectedHtml()
+	/*-{
+	    //  return this.getSelectedHtml(true);  CKEditor 4.5 supposedly has this new method which we can't use yet
+	    // this.lockSelection();
+	    var selection = this.getSelection();
+	    if ( selection == null ) {
+	      // this.unlockSelection();
+	    	return "";
+	    }
+	    var ranges = selection.getRanges();
+	    if ( ranges == null || ranges.length == 0 ) {
+	    	return "";
+	    }
+	    var divElem = new $wnd.CKEDITOR.dom.element('div');
+	    for( var i=0; i < ranges.length; ++i ) {
+	    	divElem.append(ranges[i].cloneContents());
+	    }
+	    var html = divElem.getHtml();
+	    console.log('getSelectedHtml(): ' + html );
+	    // this.unlockSelection();
+	    return html;
+	}-*/;
+
 }
