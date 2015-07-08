@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 24 June 2015
+Last updated: 8 July 2015
 
 3/26/2015 - Migrated from Google Code (https://code.google.com/p/vaadin-ckeditor/) to GitHub (https://github.com/OpenESignForms/vaadin-ckeditor).
 
@@ -20,6 +20,7 @@ The CKEditor code, in full as downloaded from http://ckeditor.com, is present in
 src/org/vaadin/openesignforms/ckeditor/public folder.  No changes to CKEditor were made.
 However, we remove the following files from the standard CKEditor distribution as they are not needed:
    ckeditor/samples
+We also install our vaadinsave plugin in addition to the CKEditor plugins shipped in the full package release.
 If you are compiling yourself, you will need to install CKEditor code into your project
 as we do not check in the CKEditor code in our source code system.
 1) Download the latest ZIP file from ckeditor.com. We include the Full Editor version.
@@ -57,14 +58,17 @@ under the Creative Commons Attribution 3.0 License.
 
   KNOWN ISSUES
   ============
-  See: https://code.google.com/p/vaadin-ckeditor/issues/list
+  See: https://github.com/OpenESignForms/vaadin-ckeditor/issues
   
   CHANGELOG
   =========
 
-7.10.0 (24 June 2015)
-- Upgraded to Vaadin 7.4.7.
-- Adding selected html listener (but currently not reliable enough so use at your own risk.
+7.10.0 (8 July 2015)
+- Upgraded to CKEditor 4.5.1
+- Upgraded to Vaadin 7.5.0.
+- Adding selected html listener (but currently not reliable enough so use at your own risk).
+  Seems if you have selected text and then clicked on an editor button, it's usually correct.
+- Project has moved to GitHub (Google Code died).
 
 7.9.6 (2 February 2015)
 - Upgraded to CKEditor 4.4.7.

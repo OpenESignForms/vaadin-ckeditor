@@ -94,7 +94,8 @@ public class VaadinCKEditorUI extends UI {
 				Notification.show("CKEditor v" + ckEditorTextField1.getVersion() + "/" + getVersion() + " - #1 contents: " + event.getProperty().getValue().toString());
 			}
 		});
-		/* 6/26/2015 - Checking in code, so commenting this out as it's not really working reliably yet.
+		// 6/26/2015 - Commenting addSelectionChangeListener out as it's not really working reliably yet.
+		/*
 		ckEditorTextField1.addSelectionChangeListener(new SelectionChangeListener() {
 			private static final long serialVersionUID = 1270295222444271706L;
 
@@ -302,6 +303,7 @@ public class VaadinCKEditorUI extends UI {
                     // in a window that's on top of the main two editors of this demo app
                     config.setBaseFloatZIndex(11000); 
                     config.setStartupFocus(true);
+                    config.setReadOnly(true);
 	                
 	                final CKEditorTextField ckEditorTextField = new CKEditorTextField(config);
 	                ckEditorTextField.setHeight("100%");
@@ -309,7 +311,7 @@ public class VaadinCKEditorUI extends UI {
 						private static final long serialVersionUID = 5592423527258867304L;
 
 						public void valueChange(ValueChangeEvent event) {
-							Notification.show("CKEditor v" + ckEditorTextField2.getVersion() + "/" + getVersion() + " - POPUP NON-MODAL 100% HEIGHT contents: " + event.getProperty().getValue().toString());
+							Notification.show("CKEditor v" + ckEditorTextField.getVersion() + "/" + getVersion() + " - POPUP NON-MODAL 100% HEIGHT contents: " + event.getProperty().getValue().toString());
 	        			}
 	        		});
 	                subLayout.addComponent(ckEditorTextField);
@@ -333,7 +335,7 @@ public class VaadinCKEditorUI extends UI {
 	}
 	
 	public String getVersion() {
-		return "7.10.0_pre0626";
+		return "7.10.0";
 	}
 
 }

@@ -164,27 +164,10 @@ public class CKEditor extends JavaScriptObject {
 	 	}
 	}-*/;
 
-	// Adapted code provided on 6/23/2015 by ado2000 at github
 	public final native String getSelectedHtml()
 	/*-{
-	    //  return this.getSelectedHtml(true);  CKEditor 4.5 supposedly has this new method which we can't use yet
-	    // this.lockSelection();
-	    var selection = this.getSelection();
-	    if ( selection == null ) {
-	      // this.unlockSelection();
-	    	return "";
-	    }
-	    var ranges = selection.getRanges();
-	    if ( ranges == null || ranges.length == 0 ) {
-	    	return "";
-	    }
-	    var divElem = new $wnd.CKEDITOR.dom.element('div');
-	    for( var i=0; i < ranges.length; ++i ) {
-	    	divElem.append(ranges[i].cloneContents());
-	    }
-	    var html = divElem.getHtml();
+	    var html = this.getSelectedHtml(true);
 	    console.log('getSelectedHtml(): ' + html );
-	    // this.unlockSelection();
 	    return html;
 	}-*/;
 
