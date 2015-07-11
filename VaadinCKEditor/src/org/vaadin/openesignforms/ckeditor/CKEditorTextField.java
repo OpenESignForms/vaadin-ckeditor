@@ -19,7 +19,6 @@ import org.vaadin.openesignforms.ckeditor.widgetset.client.ui.VCKEditorTextField
 import com.vaadin.data.Property;
 import com.vaadin.data.util.converter.Converter;
 import com.vaadin.event.ConnectorEventListener;
-import com.vaadin.event.EventRouter;
 import com.vaadin.event.FieldEvents;
 import com.vaadin.event.FieldEvents.BlurEvent;
 import com.vaadin.event.FieldEvents.BlurListener;
@@ -27,7 +26,6 @@ import com.vaadin.event.FieldEvents.FocusEvent;
 import com.vaadin.event.FieldEvents.FocusListener;
 import com.vaadin.server.PaintException;
 import com.vaadin.server.PaintTarget;
-import com.vaadin.shared.EventId;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.LegacyComponent;
@@ -243,7 +241,6 @@ public class CKEditorTextField extends AbstractField<String>
 	}
 	
 	/**
-	 * @deprecated This is a new method that is not yet working reliably.
 	 * @param listener
 	 */
 	public void addSelectionChangeListener(SelectionChangeListener listener) {

@@ -90,7 +90,15 @@ public class CKEditor extends JavaScriptObject {
 		this.on('selectionChange', function(ev) { 
 			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onSelectionChange()(); 
 		}, null, listener);
-
+		this.on('contentDom', function(ev) {
+			this.document.on('keyup', function(ev2) {
+				ev2.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onSelectionChange()(); 
+			}, null, ev.listenerData);
+			this.document.on('mouseup', function(ev2) {
+				ev2.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onSelectionChange()(); 
+			}, null, ev.listenerData);
+		}, null, listener);
+		
 		this.on('mode', function(ev) { 
 			ev.listenerData.@org.vaadin.openesignforms.ckeditor.widgetset.client.ui.CKEditorService.CKEditorListener::onModeChange(Ljava/lang/String;)(ev.editor.mode); 
 		}, null, listener);

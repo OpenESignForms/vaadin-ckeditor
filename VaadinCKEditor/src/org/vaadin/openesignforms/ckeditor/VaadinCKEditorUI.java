@@ -94,7 +94,8 @@ public class VaadinCKEditorUI extends UI {
 				Notification.show("CKEditor v" + ckEditorTextField1.getVersion() + "/" + getVersion() + " - #1 contents: " + event.getProperty().getValue().toString());
 			}
 		});
-		// 6/26/2015 - Commenting addSelectionChangeListener out as it's not really working reliably yet.
+		// This selection change listener is commented out for general use, but it does appear to work in preliminary testing as of 
+		// version 7.10.1 (11 July 2015) if you need it.
 		/*
 		ckEditorTextField1.addSelectionChangeListener(new SelectionChangeListener() {
 			private static final long serialVersionUID = 1270295222444271706L;
@@ -335,7 +336,7 @@ public class VaadinCKEditorUI extends UI {
 	}
 	
 	public String getVersion() {
-		return "7.10.0";
+		return "7.10.1";
 	}
 
 }
