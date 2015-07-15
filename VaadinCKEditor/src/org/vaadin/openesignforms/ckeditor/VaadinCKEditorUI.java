@@ -95,8 +95,8 @@ public class VaadinCKEditorUI extends UI {
 			}
 		});
 		// This selection change listener is commented out for general use, but it does appear to work in preliminary testing as of 
-		// version 7.10.1 (15 July 2015) if you need it.
-		//
+		// version 7.10.2 (15 July 2015) if you need it.
+		/*
 		ckEditorTextField1.addSelectionChangeListener(new SelectionChangeListener() {
 			private static final long serialVersionUID = 1270295222444271706L;
 
@@ -109,7 +109,7 @@ public class VaadinCKEditorUI extends UI {
 				}
 			}
 		});
-		//
+		*/
 		
 		Button resetTextButton1 = new Button("Reset editor #1");
 		resetTextButton1.addClickListener( new Button.ClickListener() {			
@@ -340,7 +340,7 @@ public class VaadinCKEditorUI extends UI {
 	}
 	
 	public String getVersion() {
-		return "7.10.1";
+		return "7.10.2";
 	}
 
 }

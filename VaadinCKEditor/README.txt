@@ -63,7 +63,7 @@ under the Creative Commons Attribution 3.0 License.
   CHANGELOG
   =========
 
-7.10.1 (15 July 2015)
+7.10.2 (15 July 2015)
 - Upgraded to Vaadin 7.5.1.
 - The 7.10.0 added 'selected html listener' (addSelectionChangeListener(SelectionChangeListener listener) is more
   reliable now, but it depends on keyup and mouseup events, so could be a bit browser heavy, but didn't notice any issues.
