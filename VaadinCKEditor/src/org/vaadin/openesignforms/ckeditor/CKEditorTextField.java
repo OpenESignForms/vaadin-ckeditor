@@ -182,13 +182,10 @@ public class CKEditorTextField extends AbstractField<String>
         }
         
         if (variables.containsKey(SelectionChangeEvent.EVENT_ID)) {
-    		//System.out.println("*** TRACE FROM CLIENT changeVariables() - selectionChange - " + System.currentTimeMillis());
         	Object selectedHtmlObject = variables.get(SelectionChangeEvent.EVENT_ID);
             if ( selectedHtmlObject != null ) {
             	String selectedHtml = selectedHtmlObject.toString();
-            	if ( selectedHtml != null && ! "".equals(selectedHtml) ) {
-                	fireEvent(new SelectionChangeEvent(this,selectedHtml));
-            	}
+            	fireEvent(new SelectionChangeEvent(this,selectedHtml));
             }
         }
 
@@ -341,6 +338,10 @@ public class CKEditorTextField extends AbstractField<String>
         
         public String getSelectedHtml() {
         	return selectedHtml;
+        }
+        
+        public boolean hasSelectedHtml() {
+        	return ! "".equals(selectedHtml);
         }
     }
 

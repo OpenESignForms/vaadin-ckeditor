@@ -174,9 +174,7 @@ public class CKEditor extends JavaScriptObject {
 
 	public final native String getSelectedHtml()
 	/*-{
-	    var html = this.getSelectedHtml(true);
-	    console.log('getSelectedHtml(): ' + html );
-	    return html;
+	    return this.getSelectedHtml(true);
 	}-*/;
 
 }

@@ -95,17 +95,21 @@ public class VaadinCKEditorUI extends UI {
 			}
 		});
 		// This selection change listener is commented out for general use, but it does appear to work in preliminary testing as of 
-		// version 7.10.1 (11 July 2015) if you need it.
-		/*
+		// version 7.10.1 (15 July 2015) if you need it.
+		//
 		ckEditorTextField1.addSelectionChangeListener(new SelectionChangeListener() {
 			private static final long serialVersionUID = 1270295222444271706L;
 
 			public void selectionChange(SelectionChangeEvent event) {
-				Notification.show("CKEditor selected HTML: " + event.getSelectedHtml(), Type.ERROR_MESSAGE);
-				ckEditorTextField1.focus();
+				if ( event.hasSelectedHtml() ) {
+					Notification.show("CKEditor selected HTML: " + event.getSelectedHtml(), Type.ERROR_MESSAGE);
+					ckEditorTextField1.focus();
+				} else {
+					Notification.show("CKEditor un-select reported", Type.ERROR_MESSAGE);
+				}
 			}
 		});
-		*/
+		//
 		
 		Button resetTextButton1 = new Button("Reset editor #1");
 		resetTextButton1.addClickListener( new Button.ClickListener() {			

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
 
+import com.gargoylesoftware.htmlunit.javascript.host.Console;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
@@ -75,6 +76,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	private CKEditor ckEditor = null;
 	private boolean ckEditorIsReady = false;
 	private boolean resizeListenerInPlace = false;
+	private boolean notifyBlankSelection = false;
 	
 	private LinkedList<String> protectedSourceList = null;
 	private HashMap<String,String> writerRules = null;
@@ -425,8 +427,13 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 		if ( ckEditorIsReady ) {
 			if ( clientToServer.hasEventListeners(this, EVENT_SELECTION_CHANGE) ) {
 				String html = ckEditor.getSelectedHtml();
-				if ( html != null && ! "".equals(html) ) {
+				if ( html == null )
+					html = "";
+				// We'll send an update for nothing selected (unselected) only if we've sent out an event for a prior selected event.
+				boolean isBlankSelection = "".equals(html);
+				if ( ! isBlankSelection || notifyBlankSelection ) {
 		            clientToServer.updateVariable(paintableId, EVENT_SELECTION_CHANGE, html, true);
+		            notifyBlankSelection = ! isBlankSelection;
 				}
 			}
 		}
