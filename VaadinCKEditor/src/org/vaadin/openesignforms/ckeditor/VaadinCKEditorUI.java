@@ -28,6 +28,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
 /**
+ * HISTORY:
  * This is a port of VaadinCKEditorApplication 1.8.2 built using Vaadin 6.8.10, and we're giving it version 7.8.2
  * to show it's the same basic code, just ported to Vaadin 7, but using the new VaadinCKEditorUI name.
  * It is essentially a "legacy port" and does not yet take advantage of any of the new capabilities of Vaadin 7.0.5.
@@ -340,7 +341,7 @@ public class VaadinCKEditorUI extends UI {
 	}
 	
 	public String getVersion() {
-		return "7.10.2";
+		return "7.10.3";
 	}
 
 }
