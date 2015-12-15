@@ -63,6 +63,10 @@ under the Creative Commons Attribution 3.0 License.
   CHANGELOG
   =========
 
+7.10.6 (15 December 2015)
+- Upgraded to CKEditor 4.5.6.
+- Upgraded to Vaadin 7.5.10.
+
 7.10.5 (16 October 2015)
 - Upgraded to CKEditor 4.5.4.
 - Upgraded to Vaadin 7.5.7.
