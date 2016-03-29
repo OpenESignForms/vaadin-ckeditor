@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2015 Yozons, Inc.
+// Copyright (C) 2010-2016 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -47,6 +47,8 @@ public class CKEditorTextField extends AbstractField<String>
 	private boolean focusRequested = false;
 	protected LinkedList<VaadinSaveListener> vaadinSaveListenerList;
 
+	private boolean textIsDirty;
+
 	public CKEditorTextField() {
 		super.setValue("");
 		setWidth("100%");
@@ -80,15 +82,27 @@ public class CKEditorTextField extends AbstractField<String>
     		newValue = "";
     	super.setValue(newValue, false);
     	requestRepaint();
+    	textIsDirty = true;
     }
+	
+	@Override
+	public void beforeClientResponse(boolean initial) {
+		if(initial) {
+			textIsDirty = true;
+		}
+		super.beforeClientResponse(initial);
+	}
 	
 	@Override
 	public void paintContent(PaintTarget target) throws PaintException {
 		//super.paintContent(target);
 		
-		Object currValueObject = getValue();
-		String currValue = currValueObject == null ? "" : currValueObject.toString();
-		target.addVariable(this, VCKEditorTextField.VAR_TEXT, currValue);
+		if(textIsDirty) {
+			Object currValueObject = getValue();
+			String currValue = currValueObject == null ? "" : currValueObject.toString();
+			target.addVariable(this, VCKEditorTextField.VAR_TEXT, currValue);
+			textIsDirty = false;
+		}
 		
 		target.addAttribute(VCKEditorTextField.ATTR_READONLY, isReadOnly());
 		target.addAttribute(VCKEditorTextField.ATTR_VIEW_WITHOUT_EDITOR, isViewWithoutEditor());
