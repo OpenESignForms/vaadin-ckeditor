@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 29 March 2016
+Last updated: 11 April 2016
 
 3/26/2015 - Migrated from Google Code (https://code.google.com/p/vaadin-ckeditor/) to GitHub (https://github.com/OpenESignForms/vaadin-ckeditor).
 
@@ -63,10 +63,15 @@ under the Creative Commons Attribution 3.0 License.
   CHANGELOG
   =========
 
+7.10.8 (11 April 2016)
+- Upgraded to CKEditor 4.5.8.
+- Includes Matti Tahvonen's patch for https://github.com/OpenESignForms/vaadin-ckeditor/issues/53 to resolve
+  the fail sending of changes (per the patch 48/52 added in 7.10.7) when a new item data source is set.
+
 7.10.7 (29 March 2016)
 - Upgraded to CKEditor 4.5.7.
 - Upgraded to Vaadin 7.6.4.
-- Includes Matti Tahvonen's patch for https://github.com/OpenESignForms/vaadin-ckeditor/issues/48 to resolve
+- Includes Matti Tahvonen's patch for https://github.com/OpenESignForms/vaadin-ckeditor/issues/48 (and 52) to resolve
   updates going out when using long polling.
 
 7.10.6 (15 December 2015)
