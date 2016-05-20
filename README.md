@@ -10,7 +10,7 @@ We used two SVN branches as of May 2013 to handle the port to Vaadin 7. That cre
 
 The older VAADIN6 branch version was developed using Vaadin 6.8.10 and CKEditor 4.1.1 in an Eclipse environment.  You simply can drop the JAR file into your Vaadin WEB-INF/lib, compile widgetsets and then you can begin using it.  No work has been done on this branch since 2013.
 
-The current Vaadin 7 version is developed using Vaadin 7.6.4 and CKEditor 4.5.8 in an Eclipse environment.  You simply can drop the JAR file into your Vaadin WEB-INF/lib, compile widgetsets and then you can begin using it. 
+The current Vaadin 7 version is developed using Vaadin 7.6.6 and CKEditor 4.5.9 in an Eclipse environment.  You simply can drop the JAR file into your Vaadin WEB-INF/lib, compile widgetsets and then you can begin using it. 
 
 _A Vaadin 7-specific version is (was?) being developed in the [ckeditor-for-vaadin7 project](https://github.com/OpenESignForms/ckeditor-for-vaadin7).  This project has stalled for lack of resources._
 
