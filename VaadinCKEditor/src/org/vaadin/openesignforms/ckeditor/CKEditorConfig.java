@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2014 Yozons, Inc.
+// Copyright (C) 2010-2016 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -17,7 +17,7 @@ import java.util.Set;
  * tested/common options, or just set the options using a JavaScript/JSON string as you prefer.
  */
 public class CKEditorConfig implements java.io.Serializable {
-	private static final long serialVersionUID = -2819105715113497805L;
+	private static final long serialVersionUID = 5437536212215099564L;
 
 	// If this is set, we'll just use it and ignore everything else.
 	protected String inPageConfig;
@@ -47,9 +47,7 @@ public class CKEditorConfig implements java.io.Serializable {
 	protected String height = null;
 	protected Integer baseFloatZIndex = null;
 	protected Integer tabSpaces = null;
-	protected Boolean pasteFromWordNumberedHeadingToList = null;
-	protected Boolean pasteFromWordRemoveFontStyles = null;
-	protected Boolean pasteFromWordRemoveStyles = null;
+	protected Boolean pasteFromWordRemoveFontStyles = null;  // Deprecated soon after the 4.6.0 release on 11/17/2016
 	protected Boolean pasteFromWordPromptCleanup = null;
 	protected String startupMode = null; // either "source" or "wysiwyg" (defaults to wysiwyg, so generally only used if you'd like to startup in source mode)
 	protected Boolean startupFocus = null;
@@ -188,16 +186,8 @@ public class CKEditorConfig implements java.io.Serializable {
 			appendJSONConfig(config, "tabSpaces : " + tabSpaces);
 		}
 		
-		if ( pasteFromWordNumberedHeadingToList != null ) {
-			appendJSONConfig(config, "pasteFromWordNumberedHeadingToList : " + pasteFromWordNumberedHeadingToList);
-		}
-		
 		if ( pasteFromWordRemoveFontStyles != null ) {
 			appendJSONConfig(config, "pasteFromWordRemoveFontStyles : " + pasteFromWordRemoveFontStyles);
-		}
-		
-		if ( pasteFromWordRemoveStyles != null ) {
-			appendJSONConfig(config, "pasteFromWordRemoveStyles : " + pasteFromWordRemoveStyles);
 		}
 		
 		if ( pasteFromWordPromptCleanup != null ) {
@@ -502,9 +492,7 @@ public class CKEditorConfig implements java.io.Serializable {
 		disableSpellChecker();
 		setDisableNativeSpellChecker(false);
 		disableResizeEditor();
-		setPasteFromWordNumberedHeadingToList(true);
 		//setPasteFromWordRemoveFontStyles(false); -- sadly, we want font color to be kept, but having this creates too much HTML mess
-		setPasteFromWordRemoveStyles(false);
 		setPasteFromWordPromptCleanup(true);
 		
 		useCompactTags();
@@ -668,21 +656,11 @@ public class CKEditorConfig implements java.io.Serializable {
 		tabSpaces = numSpaces;
 	}
 	
-	public void setPasteFromWordNumberedHeadingToList(boolean v)
-	{
-		pasteFromWordNumberedHeadingToList = v;
-	}
-
 	public void setPasteFromWordRemoveFontStyles(boolean v)
 	{
 		pasteFromWordRemoveFontStyles = v;
 	}
 
-	public void setPasteFromWordRemoveStyles(boolean v)
-	{
-		pasteFromWordRemoveStyles = v;
-	}
-	
 	public void setPasteFromWordPromptCleanup(boolean v)
 	{
 		pasteFromWordPromptCleanup = v;

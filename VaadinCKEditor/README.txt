@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 21 September 2016
+Last updated: 17 November 2016
 
 3/26/2015 - Migrated from Google Code (https://code.google.com/p/vaadin-ckeditor/) to GitHub (https://github.com/OpenESignForms/vaadin-ckeditor).
 
@@ -62,6 +62,12 @@ under the Creative Commons Attribution 3.0 License.
   
   CHANGELOG
   =========
+
+7.11.0 (17 November 2016)
+- Upgraded to CKEditor 4.6.0.  
+  The CKEditor release caused the following CKEditorConfig options to be removed as no longer supported: pasteFromWordNumberedHeadingToList and pasteFromWordRemoveStyles
+  The CKEditor release also suggests the following CKEditorConfig option will be deprecated soon: pasteFromWordRemoveFontStyles
+- Upgraded to Vaadin 7.7.4.
 
 7.10.11 (21 September 2016)
 - Upgraded to CKEditor 4.5.11.
