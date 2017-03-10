@@ -14,7 +14,7 @@ The older VAADIN6 branch version was developed using Vaadin 6.8.10 and CKEditor 
 
 **Because Google has removed Downloads from Google Code in 2014 (on its way to its eventual demise!), please visit the [Vaadin Directory to download the JAR](http://vaadin.com/addon/ckeditor-wrapper-for-vaadin) as of version 7.8.9.**
 
-The current Vaadin 7 version is developed using Vaadin 7.7.4 and CKEditor 4.6.0 in an Eclipse environment.  You simply can drop the JAR file into your Vaadin WEB-INF/lib, compile widgetsets and then you can begin using it. 
+The current Vaadin 7 version is developed using Vaadin 7.7.6 and CKEditor 4.6.2 in an Eclipse environment.  You simply can drop the JAR file into your Vaadin WEB-INF/lib, compile widgetsets and then you can begin using it. 
 
 _A Vaadin 7-specific version is (was?) being developed in the [ckeditor-for-vaadin7 project](https://github.com/OpenESignForms/ckeditor-for-vaadin7).  This project has stalled for lack of resources._
 
