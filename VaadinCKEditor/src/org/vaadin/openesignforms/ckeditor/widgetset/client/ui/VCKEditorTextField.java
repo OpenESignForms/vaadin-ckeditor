@@ -66,12 +66,14 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	/** Reference to the server connection object. */
 	protected ApplicationConnection clientToServer;
 	
+	private String inPageConfig = null;
 	private String dataBeforeEdit = null;
 	
 	private boolean immediate;
 	private boolean readOnly;
 	private boolean viewWithoutEditor; // Set to true and the editor will not be displayed, just the contents.
 	private boolean protectedBody;
+	private boolean widgetUnloaded;
 	
 	private CKEditor ckEditor = null;
 	private boolean ckEditorIsReady = false;
@@ -181,7 +183,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 		else if ( ckEditor == null ) {
 			getElement().setInnerHTML(""); // in case we put contents in there while in viewWithoutEditor mode
 			
-			final String inPageConfig = uidl.hasAttribute(ATTR_INPAGECONFIG) ? uidl.getStringAttribute(ATTR_INPAGECONFIG) : null;
+			inPageConfig = uidl.hasAttribute(ATTR_INPAGECONFIG) ? uidl.getStringAttribute(ATTR_INPAGECONFIG) : null;
 			
 			writerIndentationChars = uidl.hasAttribute(ATTR_WRITER_INDENTATIONCHARS) ? uidl.getStringAttribute(ATTR_WRITER_INDENTATIONCHARS) : null;
 			
@@ -236,19 +238,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 				++i;
 			}
 			
-			ScheduledCommand scE = new ScheduledCommand() {
-				@Override
-				public void execute() {
-					ckEditor = (CKEditor)CKEditorService.loadEditor(paintableId,
-							VCKEditorTextField.this,
-							inPageConfig,
-							VCKEditorTextField.super.getOffsetWidth(),
-							VCKEditorTextField.super.getOffsetHeight());
-					
-				}
-			};
-			
-			CKEditorService.loadLibrary(scE);
+			loadEditor();
 			
 			// editor data and some options are set when the instance is ready....
 		} else if ( ckEditorIsReady ) {
@@ -277,6 +267,20 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			}			
 		}
 		
+	}
+
+	private void loadEditor() {
+		CKEditorService.loadLibrary(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				ckEditor = (CKEditor) CKEditorService.loadEditor(
+						getElement().getId(),
+						VCKEditorTextField.this,
+						inPageConfig,
+						VCKEditorTextField.super.getOffsetWidth(),
+						VCKEditorTextField.super.getOffsetHeight());
+			}
+		});
 	}
 
 	// Listener callback
@@ -471,12 +475,23 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	}
 
 	@Override
+	protected void onLoad() {
+		if (widgetUnloaded) {
+			if (ckEditor == null && !viewWithoutEditor) {
+				loadEditor();
+			}
+			widgetUnloaded = false;
+		}
+	}
+
+	@Override
 	protected void onUnload() {
 		if ( ckEditor != null ) {
 			ckEditor.destroy();
 			ckEditor = null;
 		}
 		ckEditorIsReady = false;
+		widgetUnloaded = true;
 	}
 
 	@Override
