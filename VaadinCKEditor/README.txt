@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 28 April 2017
+Last updated: 19 May 2017
 
 3/26/2015 - Migrated from Google Code (https://code.google.com/p/vaadin-ckeditor/) to GitHub (https://github.com/OpenESignForms/vaadin-ckeditor).
 
@@ -63,11 +63,19 @@ under the Creative Commons Attribution 3.0 License.
   CHANGELOG
   =========
 
-7.11.2 (28 April 2017)
-- Accepted patch from https://github.com/jpikl (thank you!) to fix issue 36 with setVisible() and multiple editors 
+7.11.2 (19 May 2017)
+- Attempted patch from https://github.com/jpikl to fix issue 36 with setVisible() and multiple editors 
   (https://github.com/OpenESignForms/vaadin-ckeditor/issues/36).  
   Pull request: https://github.com/OpenESignForms/vaadin-ckeditor/pull/59.
-- Upgraded to Vaadin 7.7.8.
+  We found this did not work reliably and had to abandon it. For example, in the demo UI, it fails to open the editor with 100% height and
+  that correct behavior is more important to us the multi-editor set visible issue (we rarely have multiple editors on the same view).
+  Using the ideas behind the patch, however, we were able to make this work as the code previously had no concept of handling the widget
+  being unloaded and reloaded.
+- Per Issue 60 (https://github.com/OpenESignForms/vaadin-ckeditor/issues/60 from coolersport/Tien Tran), 
+  we added the code like his for Vaadin 6 to set the text as dirty on detach and related updates.
+- Per Issue 61 (https://github.com/OpenESignForms/vaadin-ckeditor/issues/61 from coolersport/Tien Tran),
+  again could not use the code for Vaadin 6, but found a way to ignore updates on initial setting.
+- Upgraded to Vaadin 7.7.9.
 
 7.11.1 (26 January 2017)
 - Upgraded to CKEditor 4.6.2.  
