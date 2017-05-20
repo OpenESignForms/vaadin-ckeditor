@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2015 Yozons, Inc.
+// Copyright (C) 2010-2017 Yozons, Inc.
 // CKEditor for Vaadin- Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -10,8 +10,8 @@ package org.vaadin.openesignforms.ckeditor.widgetset.client.ui;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.logging.Logger;
 
-import com.gargoylesoftware.htmlunit.javascript.host.Console;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
@@ -24,7 +24,6 @@ import com.vaadin.client.ApplicationConnection;
 import com.vaadin.client.LayoutManager;
 import com.vaadin.client.Paintable;
 import com.vaadin.client.UIDL;
-import com.vaadin.client.VConsole;
 import com.vaadin.client.ui.layout.ElementResizeEvent;
 import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.shared.EventId;
@@ -68,14 +67,15 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	
 	private String inPageConfig = null;
 	private String dataBeforeEdit = null;
+	private boolean ignoreDataChangesUntilReady = false;
 	
 	private boolean immediate;
 	private boolean readOnly;
 	private boolean viewWithoutEditor; // Set to true and the editor will not be displayed, just the contents.
 	private boolean protectedBody;
-	private boolean widgetUnloaded;
 	
 	private CKEditor ckEditor = null;
+	private boolean ckEditorIsBeingLoaded = false;
 	private boolean ckEditorIsReady = false;
 	private boolean resizeListenerInPlace = false;
 	private boolean notifyBlankSelection = false;
@@ -113,6 +113,9 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	public void updateFromUIDL(UIDL uidl, ApplicationConnection client) {
 		clientToServer = client;
 		paintableId = uidl.getId();
+		
+		//logState("updateFromUIDL()");
+		
 		boolean needsDataUpdate = false;
 		boolean needsProtectedBodyUpdate = false;
 		boolean readOnlyModeChanged = false;
@@ -126,13 +129,13 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 		}
 			
 		if ( ! resizeListenerInPlace ) {
+			//logState("updateFromUIDL() Adding resize listener to element: " + getElement());
 			LayoutManager.get(client).addElementResizeListener(getElement(), new ElementResizeListener() {
 
 				@Override
 				public void onElementResize(ElementResizeEvent e) {
 					doResize();
 				}
-				
 			});
 			resizeListenerInPlace = true;
 		}
@@ -174,18 +177,21 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 				if ( ! needsDataUpdate ) {
 					dataBeforeEdit = ckEditor.getData();
 				}
-				ckEditor.destroy(true);
-				ckEditorIsReady = false;
-				ckEditor = null;
+				//logState("updateFromUIDL() unloading editor for viewWithoutEditor");
+				unloadEditor();
 			}
 			getElement().setInnerHTML(dataBeforeEdit);
 		}
 		else if ( ckEditor == null ) {
+			//logState("updateFromUIDL() no editor, gathering UIDL attributes");
 			getElement().setInnerHTML(""); // in case we put contents in there while in viewWithoutEditor mode
 			
-			inPageConfig = uidl.hasAttribute(ATTR_INPAGECONFIG) ? uidl.getStringAttribute(ATTR_INPAGECONFIG) : null;
+			// If we have the config, use it, otherwise attempt to use any prior config we have
+			if ( uidl.hasAttribute(ATTR_INPAGECONFIG) )
+				inPageConfig = uidl.getStringAttribute(ATTR_INPAGECONFIG); 
 			
-			writerIndentationChars = uidl.hasAttribute(ATTR_WRITER_INDENTATIONCHARS) ? uidl.getStringAttribute(ATTR_WRITER_INDENTATIONCHARS) : null;
+			if ( uidl.hasAttribute(ATTR_WRITER_INDENTATIONCHARS) )
+				writerIndentationChars = uidl.getStringAttribute(ATTR_WRITER_INDENTATIONCHARS);
 			
 			if ( uidl.hasAttribute(ATTR_FOCUS) ) {
 				setFocus(uidl.getBooleanAttribute(ATTR_FOCUS));
@@ -197,6 +203,8 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 				if ( ! uidl.hasAttribute(ATTR_WRITERRULES_TAGNAME+i)  ) {
 					break;
 				}
+				if ( i == 0 && writerRules != null )
+					writerRules.clear();
 				// Save the rules until our instance is ready
 				String tagName = uidl.getStringAttribute(ATTR_WRITERRULES_TAGNAME+i);
 				String jsRule  = uidl.getStringAttribute(ATTR_WRITERRULES_JSRULE+i);
@@ -213,6 +221,8 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 				if ( ! uidl.hasAttribute(ATTR_KEYSTROKES_KEYSTROKE+i)  ) {
 					break;
 				}
+				if ( i == 0 && keystrokeMappings != null )
+					keystrokeMappings.clear();
 				// Save the keystrokes until our instance is ready
 				int keystroke = uidl.getIntAttribute(ATTR_KEYSTROKES_KEYSTROKE+i);
 				String command  = uidl.getStringAttribute(ATTR_KEYSTROKES_COMMAND+i);
@@ -229,6 +239,8 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 				if ( ! uidl.hasAttribute(ATTR_PROTECTED_SOURCE+i)  ) {
 					break;
 				}
+				if ( i == 0 && protectedSourceList != null )
+					protectedSourceList.clear();
 				// Save the regex until our instance is ready
 				String regex = uidl.getStringAttribute(ATTR_PROTECTED_SOURCE+i);
 				if ( protectedSourceList == null ) {
@@ -238,12 +250,14 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 				++i;
 			}
 			
+			//logState("updateFromUIDL() creating editor");
 			loadEditor();
 			
 			// editor data and some options are set when the instance is ready....
 		} else if ( ckEditorIsReady ) {
+			//logState("updateFromUIDL() editor is ready and being updated");
 			if ( needsDataUpdate ) {
-				ckEditor.setData(dataBeforeEdit);
+				setEditorData(dataBeforeEdit);
 			}
 			
 			if ( needsProtectedBodyUpdate ) {
@@ -266,21 +280,53 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 				ckEditor.setReadOnly(readOnly);
 			}			
 		}
-		
 	}
-
-	private void loadEditor() {
-		CKEditorService.loadLibrary(new ScheduledCommand() {
-			@Override
-			public void execute() {
-				ckEditor = (CKEditor) CKEditorService.loadEditor(
-						getElement().getId(),
-						VCKEditorTextField.this,
-						inPageConfig,
-						VCKEditorTextField.super.getOffsetWidth(),
-						VCKEditorTextField.super.getOffsetHeight());
-			}
-		});
+	
+	void setEditorData(String html) {
+		if ( ckEditorIsReady ) {
+			dataBeforeEdit = html;
+			ignoreDataChangesUntilReady = true;
+			ckEditor.setData(dataBeforeEdit); // We reset our flag above when the editor tells us the data is ready
+		}
+	}
+	
+	void unloadEditor() {
+		if ( ckEditor != null ) {
+			//logState("unloadEditor() with editor");
+			ckEditor.destroy(true);
+			ckEditor = null;
+		} else {
+			//logState("unloadEditor() without editor");
+		}
+		dataBeforeEdit = null;
+		ignoreDataChangesUntilReady = false;
+		ckEditorIsReady = false;
+		ckEditorIsBeingLoaded = false;
+		setFocusAfterReady = false;
+		setTabIndexAfterReady = false;
+	}
+	
+	void loadEditor() {
+		if ( ckEditor == null && inPageConfig != null && ! ckEditorIsBeingLoaded ) {
+			ckEditorIsBeingLoaded = true;
+			//logState("loadEditor() calling CKEditorService.loadLibrary");
+			CKEditorService.loadLibrary(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					//logState("loadEditor().execute() calling CKEditorService.loadEditor with inPageConfig: " + inPageConfig);
+					ckEditor = (CKEditor)CKEditorService.loadEditor(
+							paintableId,
+							VCKEditorTextField.this,
+							inPageConfig,
+							VCKEditorTextField.super.getOffsetWidth(),
+							VCKEditorTextField.super.getOffsetHeight());
+					ckEditorIsBeingLoaded = false; // Don't need this as we have ckEditor set now.
+					//logState("loadEditor().execute() CKEditorService.loadEditor done");
+				}
+			});
+		} else {
+			//logState("loadEditor() ignored, no editor, inPageConfig and/or is being loaded already");			
+		}
 	}
 
 	// Listener callback
@@ -290,8 +336,12 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			// Called if the user clicks the Save button. 
 			String data = ckEditor.getData();
 			if ( ! data.equals(dataBeforeEdit) ) {
+				//logState("onSave() - data has changed");
 				clientToServer.updateVariable(paintableId, VAR_TEXT, data, false);
 				dataBeforeEdit = data;
+				ignoreDataChangesUntilReady = false; // If they give us data by saving, we don't ignore whatever it is
+			} else {
+				//logState("onSave() - data has NOT changed");
 			}
 			clientToServer.updateVariable(paintableId, VAR_VAADIN_SAVE_BUTTON_PRESSED,"",false); // inform that the button was pressed too
 			clientToServer.sendPendingVariableChanges(); // ensure anything queued up goes now on SAVE
@@ -311,13 +361,18 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			
 			// Even though CKEditor 4.2 introduced a change event, it doesn't appear to fire if the user stays in SOURCE mode,
 			// so while we do use the change event, we still are stuck with the blur listener to detect other such changes.
-			if (  ! readOnly ) {
+			if (  ! readOnly && ! ignoreDataChangesUntilReady ) {
 				String data = ckEditor.getData();
 				if ( ! data.equals(dataBeforeEdit) ) {
+					//logState("onBlur() - data has changed");
 					clientToServer.updateVariable(paintableId, VAR_TEXT, data, false);
 	            	sendToServer = true;
 	            	dataBeforeEdit = data; 
+				} else {
+					//logState("onBlur() - data has NOT changed");
 				}
+			} else {
+				//logState("onBlur() - ignoring data has changed");
 			}
 			
 	        if (sendToServer) {
@@ -339,71 +394,86 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	// Listener callback
 	@Override
 	public void onInstanceReady() {
+		ckEditorIsReady = true;
+
+		//logState("onInstanceReady()");
 		ckEditor.instanceReady(this);
 		
 		if ( writerRules != null ) {
+			//logState("onInstanceReady() - doing writerRules: " + writerRules.size());
 			Set<String> tagNameSet = writerRules.keySet();
 			for( String tagName : tagNameSet ) {
 				ckEditor.setWriterRules(tagName, writerRules.get(tagName));
 			}
-			writerRules = null; // don't need them anymore
 		}
 		
 		if ( writerIndentationChars != null ) {
+			//logState("onInstanceReady() - doing writerIndentationChars: " + writerIndentationChars);
 			ckEditor.setWriterIndentationChars(writerIndentationChars);
-			writerIndentationChars = null;
 		}
 		
 		if ( keystrokeMappings != null ) {
 			Set<Integer> keystrokeSet = keystrokeMappings.keySet();
+			//logState("onInstanceReady() - doing keystrokeMappings: " + keystrokeSet.size());
 			for( Integer keystroke : keystrokeSet ) {
 				ckEditor.setKeystroke(keystroke, keystrokeMappings.get(keystroke));
 			}
-			keystrokeMappings = null; // don't need them anymore
 		}
 		
 		if ( protectedSourceList != null ) {
+			//logState("onInstanceReady() - doing protectedSourceList: " + protectedSourceList.size());
 			for( String regex : protectedSourceList ) {
 				ckEditor.pushProtectedSource(regex);
 			}
-			protectedSourceList = null;
 		}
 		
 		if ( dataBeforeEdit != null ) {
-			ckEditor.setData(dataBeforeEdit);
+			//logState("onInstanceReady() - doing setEditorData(dataBeforeEdit): " + dataBeforeEdit);
+			setEditorData(dataBeforeEdit);
 		}
 				
-		ckEditorIsReady = true;
 		
 		if (setFocusAfterReady) {
+			//logState("onInstanceReady() - doing setFocusAfterReady");
 			setFocus(true);
 		}
 		
 		if ( setTabIndexAfterReady ) {
+			//logState("onInstanceReady() - doing setTabIndexAfterReady tabIndex: " + tabIndex);
 			setTabIndex(tabIndex);
 		}
 		
+		//logState("onInstanceReady() - doing doResize()");
 		doResize();
 		
 		if (protectedBody) {
+			//logState("onInstanceReady() - doing protectedBody: " + protectedBody);
 			ckEditor.protectBody(protectedBody);
 		}
 
+		//logState("onInstanceReady() - doing setReadOnly: " + readOnly);
 		ckEditor.setReadOnly(readOnly);
 		
 		ckeditorVersion = CKEditorService.version();
+		//logState("onInstanceReady() - retrieved ckeditorVersion: " + ckeditorVersion);
 		clientToServer.updateVariable(paintableId, VAR_VERSION, ckeditorVersion, true);
 	}
 	
 	// Listener callback
 	@Override
 	public void onChange() {
-		if ( ckEditor != null && ! readOnly ) {
+		if ( ckEditor != null && ! readOnly && ! ignoreDataChangesUntilReady ) {
+			//logState("onChange()");
 			String data = ckEditor.getData();
 			if ( ! data.equals(dataBeforeEdit) ) {
+				//logState("onChange() - data has changed");
 				clientToServer.updateVariable(paintableId, VAR_TEXT, data, immediate);
             	dataBeforeEdit = data;
+			} else {
+				//logState("onChange() - data has NOT changed");
 			}
+		} else {
+			//logState("onChange() changes ignored");
 		}
 	}
 	
@@ -411,12 +481,18 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	@Override
 	public void onModeChange(String mode) {
 		if ( ckEditor != null ) {
-			if ( ! readOnly ) {
+			//logState("onModeChange() mode: " + mode);
+			if ( ! readOnly && ! ignoreDataChangesUntilReady ) {
 				String data = ckEditor.getData();
 				if ( ! data.equals(dataBeforeEdit) ) {
+					//logState("onModeChange() mode: " + mode + " - data has changed");
 					clientToServer.updateVariable(paintableId, VAR_TEXT, data, true);
 	            	dataBeforeEdit = data; 
+				} else {
+					//logState("onModeChange() mode: " + mode + " - data has NOT changed");	
 				}
+			} else {
+				//logState("onModeChange() ignoring data changes in mode: " + mode);
 			}
 			
 			if ("wysiwyg".equals(mode)) {
@@ -430,6 +506,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	public void onSelectionChange() {
 		if ( ckEditorIsReady ) {
 			if ( clientToServer.hasEventListeners(this, EVENT_SELECTION_CHANGE) ) {
+				//logState("onSelectionChange()");
 				String html = ckEditor.getSelectedHtml();
 				if ( html == null )
 					html = "";
@@ -446,8 +523,13 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	// Listener callback
 	@Override
 	public void onDataReady() {
-		if ( ckEditor != null ) {
+		if ( ckEditorIsReady ) {
+			//logState("onDataReady() - data changes will be accepted after this");
+			ignoreDataChangesUntilReady = false;
+			dataBeforeEdit = ckEditor.getData();
 			ckEditor.protectBody(protectedBody);
+		} else {
+			//logState("onDataReady() ignored as editor not ready");
 		}
 	}
 
@@ -465,33 +547,37 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	
 	protected void doResize() {
 		if (ckEditorIsReady) {
+			//logState("doResize() editor ready doing ScheduledCommand for resize");
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {				
 				@Override
 				public void execute() {
+					//logState("doResize().execute() doing ckEditor.resize");
 					ckEditor.resize(VCKEditorTextField.super.getOffsetWidth(), VCKEditorTextField.super.getOffsetHeight());
+					//logState("doResize().execute() done");
 				}
 			});
+		} else {
+			//logState("doResize() ignored - editor not ready");			
 		}
 	}
 
+	private void logState(String methodMessage) {
+		Logger.getGlobal().info("VCKEditorTextField." + methodMessage + "; ckEditor: " + (ckEditor==null?"None":ckEditor.getId()) + 
+				"; ckEditorIsReady: " + ckEditorIsReady + "; ckEditorIsLoading: " + ckEditorIsBeingLoaded + "; paintableId: " + paintableId);
+	}
+	
 	@Override
 	protected void onLoad() {
-		if (widgetUnloaded) {
-			if (ckEditor == null && !viewWithoutEditor) {
-				loadEditor();
-			}
-			widgetUnloaded = false;
+		//logState("onLoad()");
+		if ( ! viewWithoutEditor ) {
+			loadEditor();
 		}
 	}
 
 	@Override
 	protected void onUnload() {
-		if ( ckEditor != null ) {
-			ckEditor.destroy();
-			ckEditor = null;
-		}
-		ckEditorIsReady = false;
-		widgetUnloaded = true;
+		//logState("onUnload()");
+		unloadEditor();
 	}
 
 	@Override
