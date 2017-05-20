@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2016 Yozons, Inc.
+// Copyright (C) 2010-2017 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -36,7 +36,7 @@ import com.vaadin.util.ReflectTools;
  */
 public class CKEditorTextField extends AbstractField<String> 
 	implements FieldEvents.BlurNotifier, FieldEvents.FocusNotifier, Component.Focusable, LegacyComponent  {
-	private static final long serialVersionUID = 7258228217453800663L;
+	private static final long serialVersionUID = -4416787199757304854L;
 
 	private CKEditorConfig config;
 	private String version = "unknown";
@@ -80,8 +80,13 @@ public class CKEditorTextField extends AbstractField<String>
     public void setValue(String newValue) throws Property.ReadOnlyException, Converter.ConversionException {
     	if ( newValue == null )
     		newValue = "";
-    	super.setValue(newValue, false);
+    	super.setValue(newValue, false);  // will call setInternalValue
     	requestRepaint();
+    }
+	
+	@Override
+	protected void setInternalValue(String newValue) {
+		super.setInternalValue(newValue==null?"":newValue);
     	textIsDirty = true;
     }
 	
@@ -93,8 +98,14 @@ public class CKEditorTextField extends AbstractField<String>
  	}
  
  	@Override
+ 	protected void fireValueChange(boolean repaintIsNotNeeded) {
+ 		super.fireValueChange(repaintIsNotNeeded);
+ 		textIsDirty = true;
+ 	}	
+ 	
+ 	@Override
 	public void beforeClientResponse(boolean initial) {
-		if(initial) {
+		if (initial) {
 			textIsDirty = true;
 		}
 		super.beforeClientResponse(initial);
@@ -104,7 +115,7 @@ public class CKEditorTextField extends AbstractField<String>
 	public void paintContent(PaintTarget target) throws PaintException {
 		//super.paintContent(target);
 		
-		if(textIsDirty) {
+		if (textIsDirty) {
 			Object currValueObject = getValue();
 			String currValue = currValueObject == null ? "" : currValueObject.toString();
 			target.addVariable(this, VCKEditorTextField.VAR_TEXT, currValue);
@@ -166,7 +177,6 @@ public class CKEditorTextField extends AbstractField<String>
 			target.addAttribute(VCKEditorTextField.ATTR_FOCUS, true);
 			focusRequested = false;
 		}
-		
 	}
 	
     @Override
@@ -274,8 +284,16 @@ public class CKEditorTextField extends AbstractField<String>
 	}
 
 	@Override
+	public void attach() {
+		//System.out.println("** CKEDITOR DEBUG: attach()");
+		super.attach();
+	}
+	
+	@Override
 	public void detach() {
+		//System.out.println("** CKEDITOR DEBUG: detach()");
 		super.detach();
+	    textIsDirty = true;
 	}
 	
 	// Part of Focusable
