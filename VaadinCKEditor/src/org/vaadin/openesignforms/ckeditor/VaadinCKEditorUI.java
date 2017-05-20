@@ -95,6 +95,7 @@ public class VaadinCKEditorUI extends UI {
 				Notification.show("CKEditor v" + ckEditorTextField1.getVersion() + "/" + getVersion() + " - #1 contents: " + event.getProperty().getValue().toString());
 			}
 		});
+		
 		// This selection change listener is commented out for general use, but it does appear to work in preliminary testing as of 
 		// version 7.10.2 (15 July 2015) if you need it.
 		/*
@@ -153,6 +154,7 @@ public class VaadinCKEditorUI extends UI {
 				ckEditorTextField1.setVisible( ! ckEditorTextField1.isVisible() );
 			}
 		});
+
 		HorizontalLayout buttonsLayout = new HorizontalLayout(resetTextButton1,toggleReadOnlyButton1,toggleViewWithoutEditorButton1,toggleVisibleButton1);
 		buttonsLayout.setSpacing(true);
 		mainView.addComponent( buttonsLayout );
@@ -309,7 +311,7 @@ public class VaadinCKEditorUI extends UI {
                     // in a window that's on top of the main two editors of this demo app
                     config.setBaseFloatZIndex(11000); 
                     config.setStartupFocus(true);
-                    config.setReadOnly(true);
+                    //config.setReadOnly(true);
 	                
 	                final CKEditorTextField ckEditorTextField = new CKEditorTextField(config);
 	                ckEditorTextField.setHeight("100%");
