@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 19 May 2017
+Last updated: 25 May 2017
 
 3/26/2015 - Migrated from Google Code (https://code.google.com/p/vaadin-ckeditor/) to GitHub (https://github.com/OpenESignForms/vaadin-ckeditor).
 
@@ -62,6 +62,9 @@ under the Creative Commons Attribution 3.0 License.
   
   CHANGELOG
   =========
+
+7.12.0 (25 May 2017)
+- Upgraded to CKEditor 4.7.0.  
 
 7.11.2 (19 May 2017)
 - Attempted patch from https://github.com/jpikl to fix issue 36 with setVisible() and multiple editors 
