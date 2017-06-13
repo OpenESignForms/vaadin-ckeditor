@@ -191,7 +191,7 @@ public class VaadinCKEditorUI extends UI {
 
 			@Override
 			public void vaadinSave(CKEditorTextField editor) {
-				Notification.show("CKEditor v" + ckEditorTextField2.getVersion() + "/" + getVersion() + " - #2 VaadinSave button pressed.");
+				Notification.show("CKEditor v" + ckEditorTextField2.getVersion() + "/" + getVersion() + " - #2 VaadinSave button pressed." + " - #2 contents: " + editor.getValue().toString());
 			}
 			
 		});
@@ -343,7 +343,7 @@ public class VaadinCKEditorUI extends UI {
 	}
 	
 	public String getVersion() {
-		return "7.12.0";
+		return "7.12.1";
 	}
 
 }

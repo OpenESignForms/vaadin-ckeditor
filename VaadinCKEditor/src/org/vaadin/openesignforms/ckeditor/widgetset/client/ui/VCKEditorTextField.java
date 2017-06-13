@@ -163,6 +163,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			if ( ckEditor != null )
 				dataBeforeEdit = ckEditor.getData();
 			needsDataUpdate = ! data.equals(dataBeforeEdit);
+			//logState("updateFromUIDL() includes VAR_TEXT: " + data + "; needsDataUpdate: " + needsDataUpdate);
 			dataBeforeEdit = data;
 		}
 		
@@ -298,7 +299,6 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 		} else {
 			//logState("unloadEditor() without editor");
 		}
-		dataBeforeEdit = null;
 		ignoreDataChangesUntilReady = false;
 		ckEditorIsReady = false;
 		ckEditorIsBeingLoaded = false;
@@ -339,10 +339,10 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 				//logState("onSave() - data has changed");
 				clientToServer.updateVariable(paintableId, VAR_TEXT, data, false);
 				dataBeforeEdit = data;
-				ignoreDataChangesUntilReady = false; // If they give us data by saving, we don't ignore whatever it is
 			} else {
 				//logState("onSave() - data has NOT changed");
 			}
+			ignoreDataChangesUntilReady = false; // If they give us data by saving, we don't ignore whatever it is
 			clientToServer.updateVariable(paintableId, VAR_VAADIN_SAVE_BUTTON_PRESSED,"",false); // inform that the button was pressed too
 			clientToServer.sendPendingVariableChanges(); // ensure anything queued up goes now on SAVE
 		}
@@ -355,9 +355,14 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			boolean sendToServer = false;
 			
 			if ( clientToServer.hasEventListeners(this, EventId.BLUR) ) {
+				//logState("onBlur() - has blur event listener, will send");
 				sendToServer = true;
 	            clientToServer.updateVariable(paintableId, EventId.BLUR, "", false);
 			}
+			else {
+				//logState("onBlur() - has no blur event listener, will not send");
+			}
+
 			
 			// Even though CKEditor 4.2 introduced a change event, it doesn't appear to fire if the user stays in SOURCE mode,
 			// so while we do use the change event, we still are stuck with the blur listener to detect other such changes.
@@ -367,7 +372,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 					//logState("onBlur() - data has changed");
 					clientToServer.updateVariable(paintableId, VAR_TEXT, data, false);
 	            	sendToServer = true;
-	            	dataBeforeEdit = data; 
+	            	dataBeforeEdit = data;
 				} else {
 					//logState("onBlur() - data has NOT changed");
 				}
@@ -482,17 +487,18 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	public void onModeChange(String mode) {
 		if ( ckEditor != null ) {
 			//logState("onModeChange() mode: " + mode);
-			if ( ! readOnly && ! ignoreDataChangesUntilReady ) {
+			if ( ! readOnly ) {
 				String data = ckEditor.getData();
 				if ( ! data.equals(dataBeforeEdit) ) {
 					//logState("onModeChange() mode: " + mode + " - data has changed");
-					clientToServer.updateVariable(paintableId, VAR_TEXT, data, true);
-	            	dataBeforeEdit = data; 
+					clientToServer.updateVariable(paintableId, VAR_TEXT, data, immediate);
+	            	dataBeforeEdit = data;
+	            	ignoreDataChangesUntilReady = false; // if there's a change while doing SOURCE mode buttons, we'll accept any of those changes.
 				} else {
 					//logState("onModeChange() mode: " + mode + " - data has NOT changed");	
 				}
 			} else {
-				//logState("onModeChange() ignoring data changes in mode: " + mode);
+				//logState("onModeChange() is read-only so ignoring data changes in mode: " + mode);
 			}
 			
 			if ("wysiwyg".equals(mode)) {
@@ -525,8 +531,12 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	public void onDataReady() {
 		if ( ckEditorIsReady ) {
 			//logState("onDataReady() - data changes will be accepted after this");
+			String data = ckEditor.getData();
+			if ( ! data.equals(dataBeforeEdit) && ! ignoreDataChangesUntilReady ) {
+				clientToServer.updateVariable(paintableId, VAR_TEXT, data, immediate);				
+			}
 			ignoreDataChangesUntilReady = false;
-			dataBeforeEdit = ckEditor.getData();
+			dataBeforeEdit = data;
 			ckEditor.protectBody(protectedBody);
 		} else {
 			//logState("onDataReady() ignored as editor not ready");
@@ -563,7 +573,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 
 	private void logState(String methodMessage) {
 		Logger.getGlobal().info("VCKEditorTextField." + methodMessage + "; ckEditor: " + (ckEditor==null?"None":ckEditor.getId()) + 
-				"; ckEditorIsReady: " + ckEditorIsReady + "; ckEditorIsLoading: " + ckEditorIsBeingLoaded + "; paintableId: " + paintableId);
+				"; ckEditorIsReady: " + ckEditorIsReady + "; ckEditorIsLoading: " + ckEditorIsBeingLoaded + "; ignoreDataChangesUntilReady: " + ignoreDataChangesUntilReady + "; paintableId: " + paintableId);
 	}
 	
 	@Override
