@@ -1,4 +1,4 @@
-// Copyright (C) 2010-2015 Yozons, Inc.
+// Copyright (C) 2010-2017 Yozons, Inc.
 // CKEditor for Vaadin - Widget linkage for using CKEditor within a Vaadin application.
 //
 // This software is released under the Apache License 2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
@@ -167,7 +167,7 @@ public class CKEditor extends JavaScriptObject {
 	/*-{
 	 	if (this.document) {
 	 		if (this.document.getBody()) {
-	 			this.document.getBody().$.contentEditable = !protectBody;
+	 			this.document.getBody().$.contentEditable = !this.readOnly && !protectBody;
 	 		}
 	 	}
 	}-*/;
