@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 12 June 2017
+Last updated: 29 June 2017
 
 3/26/2015 - Migrated from Google Code (https://code.google.com/p/vaadin-ckeditor/) to GitHub (https://github.com/OpenESignForms/vaadin-ckeditor).
 
@@ -62,6 +62,12 @@ under the Creative Commons Attribution 3.0 License.
   
   CHANGELOG
   =========
+
+7.12.2 (29 June 2017)
+- Upgraded to CKEditor 4.7.1.  
+- Per suggestion from coolersport/Tien Tran, fixed the 'protectBody' method of the editor to not set contentEditable to true 
+  if the editor is in read-only mode regardless of the protectedBody attribute value.
+- Upgraded to Vaadin 7.7.10.
 
 7.12.1 (12 June 2017)
 - Patch fix for 'view without editor' mode, and to fix going from SOURCE mode back to WYSIWYG mode not noting the 
