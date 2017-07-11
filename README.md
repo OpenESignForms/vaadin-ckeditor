@@ -1,6 +1,4 @@
 # vaadin-ckeditor
-(Automatically exported from code.google.com/p/vaadin-ckeditor on 3/19/2015)
-
 CKEditor is a javascript-based HTML "rich text" WYSIWYG editor that works in common browsers.  
 This component provides a wrapper around it for use in a Vaadin-based (Java servlet plus GWT) application. 
 
@@ -14,12 +12,14 @@ The older VAADIN6 branch version was developed using Vaadin 6.8.10 and CKEditor 
 
 **Because Google has removed Downloads from Google Code in 2014 (on its way to its eventual demise!), please visit the [Vaadin Directory to download the JAR](http://vaadin.com/addon/ckeditor-wrapper-for-vaadin) as of version 7.8.9.**
 
-The current Vaadin 7 version is developed using Vaadin 7.7.10 and CKEditor 4.7.1 in an Eclipse environment.  You simply can drop the JAR file into your Vaadin WEB-INF/lib, compile widgetsets and then you can begin using it. 
+The current Vaadin 7 version is developed using Vaadin 7.7.10 and CKEditor 4.7.1 in an Eclipse environment.  You simply can drop the JAR file into your Vaadin WEB-INF/lib, compile widgetsets and then you can begin using it.
 
-_A Vaadin 7-specific version is (was?) being developed in the [ckeditor-for-vaadin7 project](https://github.com/OpenESignForms/ckeditor-for-vaadin7).  This project has stalled for lack of resources._
-
-NOTE: This widget is compiled using JDK 1.6 / Java 6.
+NOTE: This widget is compiled using JDK 1.6 / Java 6. But we only deploy using Java 8.
 
 It was built for use in the [Open eSignForms](http://open.esignforms.com/) open source electronic contracting and electronic signature web-based application (SaaS) where forms can be developed for [electronic signatures](http://www.yozons.com/electronicSignatures.jsp), routing, etc.
 
 **NOTE:** *All code contributed to this project will be bundled under the single copyright owner, Yozons Inc., but of course it's released under Apache 2.0 so you are free to do with the code as you please.*
+
+**VAADIN 8**  [Another project has forked our code and taken over CKEditor maintenance for Vaadin 8.](https://github.com/alump/CKEditor)
+
+(Automatically exported from code.google.com/p/vaadin-ckeditor on 3/19/2015)
