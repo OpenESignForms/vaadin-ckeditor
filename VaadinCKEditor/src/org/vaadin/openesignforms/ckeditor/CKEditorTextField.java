@@ -81,7 +81,7 @@ public class CKEditorTextField extends AbstractField<String>
     	if ( newValue == null )
     		newValue = "";
     	super.setValue(newValue, false);  // will call setInternalValue
-    	requestRepaint();
+    	markAsDirty();
     }
 	
 	@Override
@@ -179,10 +179,7 @@ public class CKEditorTextField extends AbstractField<String>
 		}
 	}
 	
-    @Override
     public void changeVariables(Object source, Map<String, Object> variables) {
-        //super.changeVariables(source, variables);
-
         // Sets the CKEditor version
         if (variables.containsKey(VCKEditorTextField.VAR_VERSION)) {
         	version = (String)variables.get(VCKEditorTextField.VAR_VERSION);
@@ -301,7 +298,7 @@ public class CKEditorTextField extends AbstractField<String>
     public void focus() {
 		super.focus();
 		focusRequested = true;
-		requestRepaint();
+		markAsDirty();
     }
 	
 	public boolean isViewWithoutEditor() {
@@ -309,7 +306,7 @@ public class CKEditorTextField extends AbstractField<String>
 	}
 	public void setViewWithoutEditor(boolean v) {
 		viewWithoutEditor = v;
-		requestRepaint();
+		markAsDirty();
 	}
 	
 	public void insertHtml(String html) {
@@ -317,7 +314,7 @@ public class CKEditorTextField extends AbstractField<String>
 			insertHtml = html;
 		else 
 			insertHtml += html;
-		requestRepaint();
+		markAsDirty();
 	}
 	
 	public void insertText(String text) {
@@ -325,12 +322,12 @@ public class CKEditorTextField extends AbstractField<String>
 			insertText = text;
 		else 
 			insertText += text;
-		requestRepaint();
+		markAsDirty();
 	}
 
 	public void setProtectedBody(boolean protectedBody) {
 		this.protectedBody = protectedBody;
-		requestRepaint();
+		markAsDirty();
 	}
 
 	public boolean isProtectedBody() {

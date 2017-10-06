@@ -21,6 +21,7 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ApplicationConnection;
+import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.LayoutManager;
 import com.vaadin.client.Paintable;
 import com.vaadin.client.UIDL;
@@ -61,6 +62,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 
 	/** The client side widget identifier */
 	protected String paintableId;
+	protected String ckeditorContainerId = null;
 
 	/** Reference to the server connection object. */
 	protected ApplicationConnection clientToServer;
@@ -168,8 +170,10 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 		}
 		
 		// Save the client side identifier (paintable id) for the widget
-		if ( ! paintableId.equals(getElement().getId()) ) {
-			getElement().setId(paintableId);
+		if ( ckeditorContainerId == null )
+			ckeditorContainerId = "VCKE_" + paintableId;
+		if ( ! ckeditorContainerId.equals(getElement().getId()) ) {
+			getElement().setId(ckeditorContainerId);
 		}
 		
 		if ( viewWithoutEditor ) {
@@ -315,7 +319,7 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 				public void execute() {
 					//logState("loadEditor().execute() calling CKEditorService.loadEditor with inPageConfig: " + inPageConfig);
 					ckEditor = (CKEditor)CKEditorService.loadEditor(
-							paintableId,
+							ckeditorContainerId,
 							VCKEditorTextField.this,
 							inPageConfig,
 							VCKEditorTextField.super.getOffsetWidth(),
@@ -330,10 +334,12 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 	}
 
 	// Listener callback
+	// Called if the user clicks the (Vaadin) Save button. 
 	@Override
 	public void onSave() {
+		//logState("onSave() - readOnly: " + readOnly);
 		if ( ckEditorIsReady && ! readOnly ) {
-			// Called if the user clicks the Save button. 
+			ignoreDataChangesUntilReady = false; // If they give us data by saving, we don't ignore whatever it is
 			String data = ckEditor.getData();
 			if ( ! data.equals(dataBeforeEdit) ) {
 				//logState("onSave() - data has changed");
@@ -342,15 +348,17 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			} else {
 				//logState("onSave() - data has NOT changed");
 			}
-			ignoreDataChangesUntilReady = false; // If they give us data by saving, we don't ignore whatever it is
 			clientToServer.updateVariable(paintableId, VAR_VAADIN_SAVE_BUTTON_PRESSED,"",false); // inform that the button was pressed too
-			clientToServer.sendPendingVariableChanges(); // ensure anything queued up goes now on SAVE
+			logState("onSave() - sending pending changes to the server; rpc queue count: " + clientToServer.getServerRpcQueue().size() + "; isFlushPending: " + clientToServer.getServerRpcQueue().isFlushPending());
+			clientToServer.getServerRpcQueue().flush(); // ensure anything queued up goes now on SAVE
+			logState("onSave() - after sent pending changes to the server; rpc queue count: " + clientToServer.getServerRpcQueue().size() + "; isFlushPending: " + clientToServer.getServerRpcQueue().isFlushPending());
 		}
 	}
 
 	// Listener callback
 	@Override
 	public void onBlur() {
+		//logState("onBlur()");
 		if ( ckEditorIsReady ) {
 			boolean sendToServer = false;
 			
@@ -362,11 +370,10 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			else {
 				//logState("onBlur() - has no blur event listener, will not send");
 			}
-
 			
 			// Even though CKEditor 4.2 introduced a change event, it doesn't appear to fire if the user stays in SOURCE mode,
 			// so while we do use the change event, we still are stuck with the blur listener to detect other such changes.
-			if (  ! readOnly && ! ignoreDataChangesUntilReady ) {
+			if ( ! readOnly && ! ignoreDataChangesUntilReady ) {
 				String data = ckEditor.getData();
 				if ( ! data.equals(dataBeforeEdit) ) {
 					//logState("onBlur() - data has changed");
@@ -381,7 +388,9 @@ public class VCKEditorTextField extends Widget implements Paintable, CKEditorSer
 			}
 			
 	        if (sendToServer) {
-	            clientToServer.sendPendingVariableChanges();
+				logState("onBlur() - flushing changes to server; rpc queue count: " + clientToServer.getServerRpcQueue().size() + "; isFlushPending: " + clientToServer.getServerRpcQueue().isFlushPending());
+	        	clientToServer.getServerRpcQueue().flush();
+				logState("onBlur() - after flushed changes to server; rpc queue count: " + clientToServer.getServerRpcQueue().size() + "; isFlushPending: " + clientToServer.getServerRpcQueue().isFlushPending());
 			}
 		}
 	}

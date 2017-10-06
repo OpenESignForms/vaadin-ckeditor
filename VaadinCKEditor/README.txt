@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 29 June 2017
+Last updated: 6 October 2017
 
 3/26/2015 - Migrated from Google Code (https://code.google.com/p/vaadin-ckeditor/) to GitHub (https://github.com/OpenESignForms/vaadin-ckeditor).
 
@@ -55,6 +55,7 @@ under the Creative Commons Attribution 3.0 License.
   TODO
   ====
   * Take advantage of Vaadin 7 features for add-on widgets.
+  * Create Vaadin 8 version.
 
   KNOWN ISSUES
   ============
@@ -62,6 +63,12 @@ under the Creative Commons Attribution 3.0 License.
   
   CHANGELOG
   =========
+
+7.12.3 (6 October 2017)
+- Upgraded to CKEditor 4.7.3.
+- Per issue 69 (https://github.com/OpenESignForms/vaadin-ckeditor/issues/69), changed the editor's DIV id to use
+  'VCKE_paintableid' instead of just 'paintableid' which is just numbers.
+- Added Vaadin Save plugin to the popup editors in the demo UI.
 
 7.12.2 (29 June 2017)
 - Upgraded to CKEditor 4.7.1.  

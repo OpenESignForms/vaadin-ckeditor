@@ -263,7 +263,8 @@ public class VaadinCKEditorUI extends UI {
                     config.useCompactTags();
                     config.disableElementsPath();
                     config.disableSpellChecker();
-                    config.enableVaadinSavePlugin();
+                    config.enableCtrlSWithVaadinSavePlugin();
+                    //config.enableVaadinSavePlugin();
                     // set BaseFloatZIndex 1000 higher than CKEditor's default of 10000; probably a result of an editor opening
                     // in a window that's on top of the main two editors of this demo app
                     config.setBaseFloatZIndex(11000); 
@@ -274,7 +275,15 @@ public class VaadinCKEditorUI extends UI {
 						private static final long serialVersionUID = -1308863170484877239L;
 
 						public void valueChange(ValueChangeEvent event) {
-							Notification.show("CKEditor v" + ckEditorTextField2.getVersion() + "/" + getVersion() + " - POPUP MODAL contents: " + event.getProperty().getValue().toString());
+							Notification.show("CKEditor v" + ckEditorTextField.getVersion() + "/" + getVersion() + " - POPUP MODAL contents: " + event.getProperty().getValue().toString());
+	        			}
+	        		});
+	                ckEditorTextField.addVaadinSaveListener( new CKEditorTextField.VaadinSaveListener() {
+						private static final long serialVersionUID = 5179094557786207192L;
+
+						@Override
+	        			public void vaadinSave(CKEditorTextField editor) {
+	        				Notification.show("CKEditor v" + ckEditorTextField.getVersion() + "/" + getVersion() + " - POPUP MODAL VaadinSave button pressed." + " - #2 contents: " + editor.getValue().toString());
 	        			}
 	        		});
 	                ckEditorTextField.focus();
@@ -306,7 +315,7 @@ public class VaadinCKEditorUI extends UI {
 	                config.useCompactTags();
 	                config.disableElementsPath();
 	                config.disableSpellChecker();
-	                config.enableVaadinSavePlugin();
+                    config.enableCtrlSWithVaadinSavePlugin();
                     // set BaseFloatZIndex 1000 higher than CKEditor's default of 10000; probably a result of an editor opening
                     // in a window that's on top of the main two editors of this demo app
                     config.setBaseFloatZIndex(11000); 
@@ -321,6 +330,15 @@ public class VaadinCKEditorUI extends UI {
 						public void valueChange(ValueChangeEvent event) {
 							Notification.show("CKEditor v" + ckEditorTextField.getVersion() + "/" + getVersion() + " - POPUP NON-MODAL 100% HEIGHT contents: " + event.getProperty().getValue().toString());
 	        			}
+	        		});
+	                ckEditorTextField.addVaadinSaveListener( new CKEditorTextField.VaadinSaveListener() {
+						private static final long serialVersionUID = 2521954866396213777L;
+
+						@Override
+	        			public void vaadinSave(CKEditorTextField editor) {
+	        				Notification.show("CKEditor v" + ckEditorTextField.getVersion() + "/" + getVersion() + " - POPUP NON-MODAL 100% HEIGHT VaadinSave button pressed." + " - #2 contents: " + editor.getValue().toString());
+	        			}
+	        			
 	        		});
 	                subLayout.addComponent(ckEditorTextField);
 	                subLayout.setExpandRatio(ckEditorTextField,10);
@@ -343,7 +361,7 @@ public class VaadinCKEditorUI extends UI {
 	}
 	
 	public String getVersion() {
-		return "7.12.2";
+		return "7.12.3";
 	}
 
 }
