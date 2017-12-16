@@ -12,7 +12,7 @@ The older VAADIN6 branch version was developed using Vaadin 6.8.10 and CKEditor 
 
 **Because Google has removed Downloads from Google Code in 2014 (on its way to its eventual demise!), please visit the [Vaadin Directory to download the JAR](http://vaadin.com/addon/ckeditor-wrapper-for-vaadin) as of version 7.8.9.**
 
-The current Vaadin 7 version is developed using Vaadin 7.7.10 and CKEditor 4.7.1 in an Eclipse environment.  You simply can drop the JAR file into your Vaadin WEB-INF/lib, compile widgetsets and then you can begin using it.
+The current Vaadin 7 version is developed using Vaadin 7.7.12 and CKEditor 4.8.0 in an Eclipse environment.  You simply can drop the JAR file into your Vaadin WEB-INF/lib, compile widgetsets and then you can begin using it.
 
 NOTE: This widget is compiled using JDK 1.6 / Java 6. But we only deploy using Java 8.
 
