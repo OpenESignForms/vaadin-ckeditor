@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 6 October 2017
+Last updated: 16 December 2017
 
 3/26/2015 - Migrated from Google Code (https://code.google.com/p/vaadin-ckeditor/) to GitHub (https://github.com/OpenESignForms/vaadin-ckeditor).
 
@@ -55,7 +55,7 @@ under the Creative Commons Attribution 3.0 License.
   TODO
   ====
   * Take advantage of Vaadin 7 features for add-on widgets.
-  * Create Vaadin 8 version.
+  * Create Vaadin 8 version.  (This has already been done by someone at Vaadin via a fork of this project.)
 
   KNOWN ISSUES
   ============
@@ -63,6 +63,10 @@ under the Creative Commons Attribution 3.0 License.
   
   CHANGELOG
   =========
+
+7.12.4 (16 December 2017)
+- Upgraded to CKEditor 4.8.0.
+- Upgraded to Vaadin 7.7.12.
 
 7.12.3 (6 October 2017)
 - Upgraded to CKEditor 4.7.3.
