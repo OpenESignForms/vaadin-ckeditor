@@ -1,5 +1,5 @@
 File: VaadinCKEditor/README.txt
-Last updated: 16 December 2017
+Last updated: 1 April 2018
 
 3/26/2015 - Migrated from Google Code (https://code.google.com/p/vaadin-ckeditor/) to GitHub (https://github.com/OpenESignForms/vaadin-ckeditor).
 
@@ -63,6 +63,10 @@ under the Creative Commons Attribution 3.0 License.
   
   CHANGELOG
   =========
+
+7.12.5 (1 April 2018)
+- Upgraded to CKEditor 4.9.1.
+- Upgraded to Vaadin 7.7.13.
 
 7.12.4 (16 December 2017)
 - Upgraded to CKEditor 4.8.0.
