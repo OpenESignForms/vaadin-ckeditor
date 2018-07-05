@@ -12,11 +12,11 @@ The older VAADIN6 branch version was developed using Vaadin 6.8.10 and CKEditor 
 
 **Because Google has removed Downloads from Google Code in 2014 (on its way to its eventual demise!), please visit the [Vaadin Directory to download the JAR](http://vaadin.com/addon/ckeditor-wrapper-for-vaadin) as of version 7.8.9.**
 
-The current Vaadin 7 version is developed using Vaadin 7.7.13 and CKEditor 4.9.1 in an Eclipse environment.  You simply can drop the JAR file into your Vaadin WEB-INF/lib, compile widgetsets and then you can begin using it.
+The current Vaadin 7 version is developed using Vaadin 7.7.13 and CKEditor 4.10.0 in an Eclipse environment.  You simply can drop the JAR file into your Vaadin WEB-INF/lib, compile widgetsets and then you can begin using it.
 
 NOTE: This widget is compiled using JDK 1.6 / Java 6. But we only deploy using Java 8.
 
-It was built for use in the [Open eSignForms](http://open.esignforms.com/) open source electronic contracting and electronic signature web-based application (SaaS) where forms can be developed for [electronic signatures](http://www.yozons.com/electronicSignatures.jsp), routing, etc.
+It was built for use in the [Open eSignForms](https://open.esignforms.com/) open source electronic contracting and electronic signature web-based application (SaaS) where forms can be developed for [electronic signatures](https://www.yozons.com/ElectronicSignatures/), routing, etc.
 
 **NOTE:** *All code contributed to this project will be bundled under the single copyright owner, Yozons Inc., but of course it's released under Apache 2.0 so you are free to do with the code as you please.*
 
