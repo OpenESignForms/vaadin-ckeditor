@@ -34,6 +34,7 @@ import com.vaadin.util.ReflectTools;
 /**
  * Server side component for the VCKEditorTextField widget.  
  */
+@SuppressWarnings("deprecation")
 public class CKEditorTextField extends AbstractField<String> 
 	implements FieldEvents.BlurNotifier, FieldEvents.FocusNotifier, Component.Focusable, LegacyComponent  {
 	private static final long serialVersionUID = -4416787199757304854L;
@@ -90,7 +91,8 @@ public class CKEditorTextField extends AbstractField<String>
     	textIsDirty = true;
     }
 	
- 	@Override
+ 	@SuppressWarnings("rawtypes")
+	@Override
  	public void setPropertyDataSource(Property newDataSource) {
  		super.setPropertyDataSource(newDataSource);
  		markAsDirty();

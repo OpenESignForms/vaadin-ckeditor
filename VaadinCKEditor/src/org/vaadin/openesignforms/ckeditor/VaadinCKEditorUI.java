@@ -7,8 +7,8 @@
 //
 package org.vaadin.openesignforms.ckeditor;
 
-import org.vaadin.openesignforms.ckeditor.CKEditorTextField.SelectionChangeEvent;
-import org.vaadin.openesignforms.ckeditor.CKEditorTextField.SelectionChangeListener;
+//import org.vaadin.openesignforms.ckeditor.CKEditorTextField.SelectionChangeEvent;
+//import org.vaadin.openesignforms.ckeditor.CKEditorTextField.SelectionChangeListener;
 
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.label.ContentMode;
@@ -20,7 +20,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
+//import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
