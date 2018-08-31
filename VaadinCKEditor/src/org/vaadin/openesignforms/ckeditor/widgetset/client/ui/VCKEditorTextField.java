@@ -21,7 +21,6 @@ import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ApplicationConnection;
-import com.vaadin.client.ComponentConnector;
 import com.vaadin.client.LayoutManager;
 import com.vaadin.client.Paintable;
 import com.vaadin.client.UIDL;
@@ -33,6 +32,7 @@ import com.vaadin.shared.EventId;
  * Client side CKEditor widget which communicates with the server. Messages from the
  * server are shown as HTML and mouse clicks are sent to the server.
  */
+@SuppressWarnings("deprecation")
 public class VCKEditorTextField extends Widget implements Paintable, CKEditorService.CKEditorListener, Focusable {
 	
 	/** Set the CSS class name to allow styling. */

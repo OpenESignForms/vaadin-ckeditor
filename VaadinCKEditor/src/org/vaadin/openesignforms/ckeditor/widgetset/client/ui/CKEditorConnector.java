@@ -10,6 +10,7 @@ import com.vaadin.client.ui.LegacyConnector;
 import com.vaadin.client.ui.SimpleManagedLayout;
 import com.vaadin.shared.ui.Connect;
 
+@SuppressWarnings("deprecation")
 @Connect(CKEditorTextField.class)
 public class CKEditorConnector extends LegacyConnector  implements SimpleManagedLayout {
 	private static final long serialVersionUID = -3096333767592095605L;
