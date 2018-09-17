@@ -64,7 +64,7 @@ under the Creative Commons Attribution 3.0 License.
   CHANGELOG
   =========
 
-7.12.6 (5 July 2018)
+7.12.7 (17 September 2018)
 - Upgraded to CKEditor 4.10.1.
 - Upgraded to Vaadin 7.7.14.
 
